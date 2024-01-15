@@ -1,0 +1,152 @@
+/* For the .row-a class */
+.row-a {
+    margin: 0;
+    display:flex;
+    padding: 0; 
+  }
+  .m-a-1{
+    margin-right: 10px;
+  }
+  
+  /* For the .col-a class */
+  .col-a {
+    flex: 1;
+    padding: 15px;
+  }
+  .col-a-sm {
+    width:420px;
+    padding: 15px;
+  }
+  /* For the .col-a-sm-2 class */
+.col-a-sm-2 {
+    flex: 0 0 16.666667%; /* Adjust flex as needed */
+    max-width: 16.666667%; /* Adjust max-width as needed */
+    /* Add other styling as needed */
+  }
+  
+  /* For the .col-a-sm-10 class */
+  .col-a-sm-10 {
+    flex: 0 0 83.333333%; /* Adjust flex as needed */
+    max-width: 83.333333%; /* Adjust max-width as needed */
+    /* Add other styling as needed */
+  }
+  
+  /* For the .col-a-form-label class */
+  .col-a-form-label {
+    display: block;
+    margin-bottom: 0.5rem; /* Adjust margin-bottom as needed */
+    /* Add other styling as needed */
+  }
+  
+  /* For the .form-a-control class */
+  .form-a-control {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    /* Add other styling as needed */
+  }
+
+  .form-a-group {
+    margin-bottom: 1rem; /* Adjust margin-bottom as needed */
+    /* Add other styling as needed */
+  }
+  
+  .form-a-group label {
+    display: block;
+    margin-bottom: 0.5rem; /* Adjust margin-bottom as needed */
+    /* Add other styling as needed */
+  }
+  
+  .form-a-group .form-a-control {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    /* Add other styling as needed */
+  }
+  
+  .form-a-group .form-a-control:focus {
+    border-color: #007bff; /* Adjust focus border color as needed */
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Adjust focus box shadow as needed */
+  }
+  
+  .form-a-group .form-a-control::placeholder {
+    color: #6c757d; /* Adjust placeholder color as needed */
+  }
+  
+  /* Add additional styles for validation states if needed */
+  .form-a-group .is-valid .form-a-control,
+  .form-a-group .is-valid .form-a-control:focus {
+    border-color: #28a745; /* Adjust valid border color as needed */
+  }
+  
+  .form-a-group .is-invalid .form-a-control,
+  .form-a-group .is-invalid .form-a-control:focus {
+    border-color: #dc3545; /* Adjust invalid border color as needed */
+  }
+  
+  /* For the .btn-a class */
+  .btn-a {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid #5c5c5c;
+    border-radius: 5px; 
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .w-a-100{
+    width:100%;
+  }
+
+  .btn-a:hover {
+    background-color: #adadad;
+    color: #fff; 
+  }
+  
+  /* For the .btn-a-primary class (assuming it's for a primary button style) */
+  .btn-a-primary {
+    background-color: #007bff; /* Adjust background color as needed */
+    color: #fff; /* Adjust text color as needed */
+    /* Add other styling as needed */
+  }
+  
+  .btn-a-primary:hover {
+    background-color: #0056b3; /* Adjust hover background color as needed */
+  }
+  .btn-a-success {
+    background-color: #00C851; /* Adjust background color as needed */
+    color: #fff; /* Adjust text color as needed */
+    /* Add other styling as needed */
+  }
+  
+  .btn-a-success:hover {
+    background-color: #007E33; /* Adjust hover background color as needed */
+  }
+  
+  .center-a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Optional: Set the height to 100% of the viewport height for vertical centering */
+  }
+  

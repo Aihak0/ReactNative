@@ -1,0 +1,68 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+
+
+.App-header{
+  border-bottom: 3px solid;
+  border-image: linear-gradient(90deg, rgba(222, 187, 252, 1) 0%, rgba(133, 21, 218, 1) 51%, rgba(42, 7, 71, 1) 100%);
+  border-image-slice: 1; 
+}
+
+.nav {
+  
+  padding: 15px;
+  display: flex;
+  margin-left:10%;
+  margin-right:10%;
+  justify-content: space-between;
+}
+
+.nav-list,
+.nav-list-right {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex; 
+}
+.nav-list-right li,
+.nav-list li{
+  display: flex;
+  align-items: center;
+}
+
+
+.nav-logo, .nav-link,
+.nav-link-profile {
+  text-decoration: none;
+  color: black;
+  margin-right: 15px;
+}
+
+.nav-logo{
+  margin-right: 30px;
+}
+
+.nav-link-profile img {
+  width:35px;
+  border-radius:50%;
+  border:1px solid black;
+}
+
+.nav-logo{
+  font-size:24px;
+}
+.nav-link:hover,
+.nav-link-profile:hover {
+  color: #61dafb;
+}
+
