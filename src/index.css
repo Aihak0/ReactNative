@@ -42,10 +42,11 @@
 
 
 .nav-logo, .nav-link,
-.nav-link-profile {
+.nav-link-profile,.profile{
   text-decoration: none;
   color: black;
   margin-right: 15px;
+  cursor:pointer;
 }
 
 .nav-logo{
@@ -54,6 +55,12 @@
 
 .nav-link-profile img {
   width:35px;
+  border-radius:50%;
+  border:1px solid black;
+}
+
+.profile img{
+  width:45px;
   border-radius:50%;
   border:1px solid black;
 }

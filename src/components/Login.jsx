@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 function Login() {
-    const navigate = useNavigate();
+  const { setLogin } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -30,7 +32,8 @@ function Login() {
 
       if (response.data.success) {
 
-        sessionStorage.setItem('UserID', response.data.id);
+        setLogin(response.data.id);
+        
             // Rest of the code
         Swal.fire({
           icon: 'success',
@@ -68,7 +71,6 @@ function Login() {
   };
 
   return (
-    <div>
       <form onSubmit={handleSubmit}>
         <div className='center-a'>
           <div className='col-a-sm '>
@@ -95,11 +97,11 @@ function Login() {
                 required
               />
             </div>
+            <a href="/register"><p>Tidak Punya Akun?</p></a>
             <button className="btn-a btn-a-success" type="submit">Login</button>
           </div>
         </div>
       </form>
-    </div>
   );
 }
 

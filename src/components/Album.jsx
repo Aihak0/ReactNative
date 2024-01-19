@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useParams } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const ImageGallery = () => {
+const Album = () => {
   const [dropdownState, setDropdownState] = useState({});
   const [images, setImages] = useState([]);
   const navigate = useNavigate();
+  const { id: albumId } = useParams();
 
 
   const openDropdown = (fotoID) => {
@@ -65,7 +66,7 @@ const ImageGallery = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get('http://localhost/GALERY-VITE/api/getFoto.php');
+        const response = await axios.get(`http://localhost/GALERY-VITE/api/getFotoInAlbum.php?id_album=${albumId}`);
         setImages(response.data);
       } catch (error) {
         console.error('Error fetching images:', error);
@@ -127,4 +128,4 @@ const ImageGallery = () => {
   );
 };
 
-export default ImageGallery;
+export default Album;

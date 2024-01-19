@@ -160,6 +160,7 @@ function Register() {
                     required
                 />
             </div>
+            <a href="/login"><p>Sudah Punya Akun?</p></a>
         <button className="btn-a btn-a-success" type="submit">Register</button>
         </div>
         </div>
