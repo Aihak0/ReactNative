@@ -1,7 +1,7 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-
+  
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -18,9 +18,8 @@
   border-image-slice: 1; 
 }
 
-.nav {
-  
-  padding: 15px;
+.nav {  
+  padding: 5px;
   display: flex;
   margin-left:10%;
   margin-right:10%;
@@ -41,13 +40,7 @@
 }
 
 
-.nav-logo, .nav-link,
-.nav-link-profile,.profile{
-  text-decoration: none;
-  color: black;
-  margin-right: 15px;
-  cursor:pointer;
-}
+
 
 .nav-logo{
   margin-right: 30px;
@@ -65,11 +58,9 @@
   border:1px solid black;
 }
 
-.nav-logo{
-  font-size:24px;
+.nav-logo img{
+  width:60px;
+
 }
-.nav-link:hover,
-.nav-link-profile:hover {
-  color: #61dafb;
-}
+
 

@@ -23,7 +23,7 @@ const DetailImage = () => {
       AlbumID: 0,
       UserID: 0,
       JumlahLike: 0,
-      Username: 'unknow'
+      Username: 'unknown'
     });
     
     

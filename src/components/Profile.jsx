@@ -21,7 +21,6 @@ const customStyles = {
   };
 
 const Profile = () => {
-    let subtitle;
     const [activeTab, setActiveTab] = useState('foto');
     const userID = sessionStorage.getItem('UserID') || 0;
     const [dropdownState, setDropdownState] = useState({});
@@ -31,6 +30,13 @@ const Profile = () => {
     const [formData, setFormData] = useState({
         AlbumID:0 ,
         FotoID: 0,
+      });
+      const [user, setUser] = useState({
+        UserID:0,
+        Username: 'Unnamed',
+        Email: '',
+        NamaLengkap: '',
+        Alamat: '',
       });
 
 
@@ -154,9 +160,24 @@ const Profile = () => {
       }
     };
 
+    const fetchUser = async () => {
+        try {
+          const response = await axios.get(`http://localhost/GALERY-VITE/api/getProfileDetail.php?user_id=${userID}`);
+          const userDataFromApi = response.data;
+          const selectedUserData = userDataFromApi.UserID ? userDataFromApi[userDataFromApi.UserID] : userDataFromApi[0];
+    
+          setUser(prevUserData => ({ ...prevUserData, ...selectedUserData }));
+          
+        } catch (error) {
+          console.error('Error fetching User:', error);
+        }
+      };
+
     useEffect(() => {
         fetchAlbum();
         fetchImages();
+        fetchUser();
+        console.log(user);
       }, []);
 
       const containerStyle = {
@@ -183,7 +204,7 @@ const Profile = () => {
             <div className="ProfileContainer">
                 <div className="Profile">
                     <img src="../../public/profile.jpg" alt="Profile" />
-                    <h1>Nama</h1>
+                    <h1>{user.Username}</h1>
                 </div>
             </div>
             <div className="MenuContainer">

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useAuth } from './AuthContext';
 import { FaAngleDown } from "react-icons/fa6";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function Header() {
@@ -42,55 +43,57 @@ function Header() {
 
 
   return (
-    <header className="App-header">
-      <nav className='nav'>
-        <ul className="nav-list">
-          <li><Link to="/" className="nav-logo">Galery</Link></li>
-          <li><Link to="/" className="nav-link">Beranda</Link></li>
-          <li><Link to="#" className="nav-link">#</Link></li>
-        </ul>
-        <ul className="nav-list-right">
-          {isLoggedIn && (
-            <>
-              <li><Link to="/add-image" className="nav-link">Tambah Gambar</Link></li>
-            </>
-          )}
-          {!isLoggedIn && (
-            <li><Link to="/login" className="nav-link">Login</Link></li>
-          )}
-          <li><div className="dropdown">
-                <div className="nav-link" onClick={handleDropdownAlbum}>
-                  <FaAngleDown />
-                </div>
-                {isDropdownAlbumOpen && (
-                  <ul className="dropdown-menu" style={{right:0}}>
-                    {isLoggedIn && (
+    <header>
+      <div className="App-header">
+        <nav className='nav'>
+          <ul className="nav-list">
+            <li><Link to="/" className="navbar-brand"><img src="../../public/Logo2.png"  width="60" height="60"  alt="Logo" /></Link></li>
+            <li className='nav-item mx-3'><Link to="/" className="btn btn-light rounded-pill">Beranda</Link></li>
+          </ul>
+          <ul className="nav-list-right">
+            {isLoggedIn && (
+              <>
+                <li><Link to="/add-image" className="btn btn-primary rounded-pill">Upload</Link></li>
+              </>
+            )}
+            {!isLoggedIn && (
+              <li className='nav-item mx-3'><Link to="/login" className="btn btn-light rounded-pill">Login</Link></li>
+            )}
+            
+            <li>
+              <div className="dropdown">
+                  <a href='#' className='nav-item mx-3 btn btn-light rounded-pill' onClick={handleDropdownToggle}>
+                    <FaAngleDown />
+                  </a>
+                  {isDropdownOpen && (
+                    <ul className="dropdown-menu" style={{right:0}}>
+                            <li><Link to="/profile" className="dropdown-item">Profile</Link></li>
+                      {isLoggedIn && (
                       <>
-                        <li><Link to="#" className="nav-link" onClick={handleLogout}>Logout</Link></li>
+                            <li className='border-bottom'></li>
+                            <li><Link to="#" className="dropdown-item" onClick={handleLogout}>Logout</Link></li>
                       </>
+                          
+                      )}
+                    </ul>
                     )}
-                  </ul>
-                )}
-              </div>
-          </li>
-          <li><div className="dropdown">
-                <div className="nav-link-profile" onClick={handleDropdownToggle}>
-                  <img src="../../public/profile.jpg" alt="Profile" />
                 </div>
-                {isDropdownOpen && (
-                  <ul className="dropdown-menu">
-                    <li><Link to="/profile">Profil</Link></li>
-                    {isLoggedIn && (
-                      <>
-                        <li><Link to="#" className="nav-link" onClick={handleLogout}>Logout</Link></li>
-                      </>
-                    )}
-                  </ul>
-                )}
-              </div>
-          </li>
-        </ul>
-      </nav>
+            </li>
+            <li>
+                  <div className="nav-link-profile ">
+                    <img src="../../public/profile.jpg" alt="Profile" />
+                  </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div className='d-flex justify-content-start my-2' style={{ marginLeft: "10%", marginRight: "10%", overflow: "auto", scrollbarWidth: "none", msOverflowStyle: "none" }}>
+        <div className="scroll-container d-flex" style={{ marginRight: "-15px" }}>
+          <button className='btn btn-light btn-sm mx-1 rounded-pill'>Makanan</button>
+        </div>
+      </div>
+
+
     </header>
   );
 }

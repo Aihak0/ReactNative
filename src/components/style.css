@@ -248,12 +248,11 @@
     background-color: #fff; /* Warna latar belakang dropdown */
     border: 1px solid #ddd; /* Garis pembatas dropdown */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bayangan dropdown */
-    padding: 8px;
   }
   
   .dropdown-menu li {
     list-style: none;
-    padding: 8px;
+    padding: 3px;
   }
   
   .dropdown-menu li a {
