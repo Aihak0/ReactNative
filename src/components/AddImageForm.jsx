@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import './style.css';
 
 const AddImageForm = () => {
+  const userID = sessionStorage.getItem('UserID') || 0;
   const [imagePreview, setImagePreview] = useState('');
+  const TanggalUnggah = new Date().toISOString();
+  const [albums, setAlbums] = useState([]);
   const [formData, setFormData] = useState({
     JudulFoto: '',
-    TanggalUnggah: '',
+    TanggalUnggah: TanggalUnggah,
+    DeskripsiFoto: '',
     AlbumID: 0,
-    UserID: 0,
+    UserID: userID,
     fileFoto: null,
   });
 
@@ -90,6 +94,17 @@ const AddImageForm = () => {
       console.error('Error inserting data:', error);
     }
   };
+  const fetchAlbum = async () => {
+    try {
+      const response = await axios.get(`http://localhost/GALERY-VITE/api/getAlbumUser.php?user_id=${userID}`);
+      setAlbums(response.data);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  };
+  useEffect(() => {
+    fetchAlbum();
+  }, []);
     return (
         <form>
           <div className='row-a'>
@@ -100,7 +115,7 @@ const AddImageForm = () => {
               accept="image/*"
               name='fileFoto'
               onChange={(e) => handleImageChange(e.target.files)}
-              style={{ display: 'none' }}
+              style={{ display: 'none'}}
             />
             <label htmlFor="image-input">
               <img
@@ -125,21 +140,20 @@ const AddImageForm = () => {
                 </div>
               </div>
               <div className="form-a-group row-a">
-                <label for="TanggalUnggah" className="col-a-sm-2 col-a-form-label">Tanggal Unggah</label>
+                <label for="DeskripsiFoto" className="col-a-sm-2 col-a-form-label">Deskripsi Foto</label>
                 <div className="col-a-sm-10">
-                  <input className="form-a-control" type="date" name='TanggalUnggah' id='TanggalUnggah'  onChange={handleInputChange}/>
+                  <input className="form-a-control" type="text" name='DeskripsiFoto' id='DeskripsiFoto'  onChange={handleInputChange}/>
                 </div>
               </div>
               <div className="form-a-group row-a">
-                <label for="AlbumID" className="col-a-sm-2 col-a-form-label">ID Album</label>
+                <label for="AlbumID" className="col-a-sm-2 col-a-form-label">Album</label>
                 <div className="col-a-sm-10">
-                  <input className="form-a-control" type="number" name='AlbumID' id='AlbumID'  onChange={handleInputChange}/>
-                </div>
-              </div>
-              <div className="form-a-group row-a">
-                <label for="UserID" className="col-a-sm-2 col-a-form-label">ID User</label>
-                <div className="col-a-sm-10">
-                  <input className="form-a-control" type="number" name='UserID' id='UserID'  onChange={handleInputChange}/>
+                  <select className='form-select' name="AlbumID" id="AlbumID" onChange={handleInputChange}>
+                    <option value="">Pilih</option>
+                    {albums.map((album) => (
+                        <option key={album.AlbumID} value={album.AlbumID}>{album.NamaAlbum}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <a href="/"><button className='btn-a m-a-1'>Close</button></a>

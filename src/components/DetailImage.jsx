@@ -188,7 +188,7 @@ const DetailImage = () => {
                         {isLoggedIn && (
                             <label className="love-checkbox">
                                 <input type="checkbox" checked={isChecked} onChange={handleLike} />
-                                <span className="heart">❤</span> 
+                                <span className="heart">&#9829;</span> 
                                 <p style={{margin:"0", padding : "0", textAlign:"center"}}>{imageData.JumlahLike}</p>
                             </label>
                         )}

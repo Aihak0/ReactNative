@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { useAuth } from './AuthContext';
 import { FaAngleDown } from "react-icons/fa6";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
 
 
 function Header() {
@@ -43,58 +44,52 @@ function Header() {
 
 
   return (
-    <header>
-      <div className="App-header">
-        <nav className='nav'>
-          <ul className="nav-list">
-            <li><Link to="/" className="navbar-brand"><img src="../../public/Logo2.png"  width="60" height="60"  alt="Logo" /></Link></li>
-            <li className='nav-item mx-3'><Link to="/" className="btn btn-light rounded-pill">Beranda</Link></li>
-          </ul>
-          <ul className="nav-list-right">
-            {isLoggedIn && (
-              <>
-                <li><Link to="/add-image" className="btn btn-primary rounded-pill">Upload</Link></li>
-              </>
-            )}
-            {!isLoggedIn && (
-              <li className='nav-item mx-3'><Link to="/login" className="btn btn-light rounded-pill">Login</Link></li>
-            )}
-            
-            <li>
-              <div className="dropdown">
-                  <a href='#' className='nav-item mx-3 btn btn-light rounded-pill' onClick={handleDropdownToggle}>
-                    <FaAngleDown />
-                  </a>
-                  {isDropdownOpen && (
-                    <ul className="dropdown-menu" style={{right:0}}>
-                            <li><Link to="/profile" className="dropdown-item">Profile</Link></li>
-                      {isLoggedIn && (
+    <header style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 1000, backgroundColor:"white"}}>
+    <div className="App-header">
+      <nav className='nav container'>
+        <ul className="nav-list">
+          <li><Link to="/" className="navbar-brand"><img src="../../public/Logo2.png"  width="60" height="60"  alt="Logo" /></Link></li>
+          <li className='nav-item mx-3'><Link to="/" className="btn btn-light rounded-pill">Beranda</Link></li>
+        </ul>
+        <ul className="nav-list-right">
+          {isLoggedIn && (
+            <>
+              <li><Link to="/add-image" className="btn btn-primary rounded-pill">Upload</Link></li>
+            </>
+          )}
+          {!isLoggedIn && (
+            <li className='nav-item mx-3'><Link to="/login" className="btn btn-light rounded-pill">Login</Link></li>
+          )}
+          
+          <li>
+            <div className="dropdown">
+                <a href='#' className='nav-item mx-3 btn btn-light rounded-pill' onClick={handleDropdownToggle}>
+                  <FaAngleDown />
+                </a>
+                {isDropdownOpen && (
+                          <ul className="dropdown-menu" style={{right:0}}>
+                    {isLoggedIn && (
                       <>
-                            <li className='border-bottom'></li>
-                            <li><Link to="#" className="dropdown-item" onClick={handleLogout}>Logout</Link></li>
-                      </>
-                          
-                      )}
-                    </ul>
+                          <li><Link to="/setting" className="dropdown-item">Setting</Link></li>
+                          <li><Link to="/profile" className="dropdown-item">Profile</Link></li>
+                          <li className='border-bottom'></li>
+                          <li><Link to="#" className="dropdown-item" onClick={handleLogout}>Logout</Link></li>
+                    </>
+                        
                     )}
+                  </ul>
+                  )}
+              </div>
+          </li>
+          <li>
+                <div className="nav-link-profile ">
+                  <img src="../../public/profile.jpg" alt="Profile" />
                 </div>
-            </li>
-            <li>
-                  <div className="nav-link-profile ">
-                    <img src="../../public/profile.jpg" alt="Profile" />
-                  </div>
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <div className='d-flex justify-content-start my-2' style={{ marginLeft: "10%", marginRight: "10%", overflow: "auto", scrollbarWidth: "none", msOverflowStyle: "none" }}>
-        <div className="scroll-container d-flex" style={{ marginRight: "-15px" }}>
-          <button className='btn btn-light btn-sm mx-1 rounded-pill'>Makanan</button>
-        </div>
-      </div>
-
-
-    </header>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
   );
 }
 

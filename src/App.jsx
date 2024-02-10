@@ -9,11 +9,18 @@ import Login from './components/Login';
 import DetailImage from './components/DetailImage';
 import { AuthProvider } from './components/AuthContext';
 import Profile from './components/Profile';
+import Setting from './components/Setting';
 import AddAlbum from './components/AddAlbum';
 import Album from './components/Album';
+import FilterButtons from './components/FilterButton';
 import './App.css';
 
 function App() {
+  const [selectedFilter, setSelectedFilter] = useState('all');
+
+  const handleFilterChange = (filter) => {
+    setSelectedFilter(filter);
+  };
  
 
   return (
@@ -26,11 +33,12 @@ function App() {
               path="/"
               element={
                 <>
-                  <Header />
-                  <div className="container">
-                    <List />
-                  </div>
-                </>
+                <Header />
+                <FilterButtons selectedFilter={selectedFilter} handleFilterChange={handleFilterChange}  />
+                <div className="container p-0" style={{ marginTop: '140px' }}>
+                  <List  selectedFilter={selectedFilter} />
+                </div>
+              </>
               }
             />
             <Route
@@ -39,7 +47,7 @@ function App() {
                   element={
                     <>
                       <Header />
-                      <div className="container">
+                      <div className="container p-0" style={{ marginTop: '140px' }}>
                         <AddImageForm />
                       </div>
                     </>
@@ -51,7 +59,7 @@ function App() {
                   element={
                     <>
                       <Header />
-                      <div className="container">
+                      <div className="container p-0" style={{ marginTop: '140px' }}>
                         <AddAlbum />
                       </div>
                     </>
@@ -62,7 +70,7 @@ function App() {
               element={
                 <>
                   <Header />
-                  <div className="container">
+                  <div className="container p-0" style={{ marginTop: '140px' }}>
                     <EditImage />
                   </div>
                 </>
@@ -73,7 +81,7 @@ function App() {
               element={
                 <>
                   <Header />
-                  <div className="container">
+                  <div className="container p-0" style={{ marginTop: '140px' }}>
                     <DetailImage />
                   </div>
                 </>
@@ -84,7 +92,7 @@ function App() {
               element={
                 <>
                   <Header />
-                  <div className="container">
+                  <div className="container p-0" style={{ marginTop: '100px' }}>
                     <Album />
                   </div>
                 </>
@@ -95,8 +103,19 @@ function App() {
               element={
                 <>
                   <Header />
-                  <div className="container">
+                  <div className="container p-0" style={{ marginTop: '140px' }}>
                     <Profile />
+                  </div>
+                </>
+              }
+            />
+            <Route
+              path="/setting"
+              element={
+                <>
+                  <Header />
+                  <div className="container p-0" style={{ marginTop: '100px' }}>
+                    <Setting />
                   </div>
                 </>
               }
