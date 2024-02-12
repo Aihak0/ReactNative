@@ -142,7 +142,7 @@ const AddImageForm = () => {
               <div className="form-a-group row-a">
                 <label for="DeskripsiFoto" className="col-a-sm-2 col-a-form-label">Deskripsi Foto</label>
                 <div className="col-a-sm-10">
-                  <input className="form-a-control" type="text" name='DeskripsiFoto' id='DeskripsiFoto'  onChange={handleInputChange}/>
+                  <textarea className="form-control" name="DeskripsiFoto" id="DeskripsiFoto" cols="10" rows="5" onChange={handleInputChange}></textarea>
                 </div>
               </div>
               <div className="form-a-group row-a">
@@ -156,8 +156,10 @@ const AddImageForm = () => {
                   </select>
                 </div>
               </div>
-              <a href="/"><button className='btn-a m-a-1'>Close</button></a>
-              <button className='btn-a btn-a-success' onClick={handleFormSubmit}>Simpan</button>
+              <div className='float-end'>
+                  <a href="/"><button type='button' className='btn btn-light mx-3'>Close</button></a>
+                  <button type="button" className='btn btn-success' onClick={handleFormSubmit}>Simpan</button>
+              </div>
             </div>
           </div>
         </form>

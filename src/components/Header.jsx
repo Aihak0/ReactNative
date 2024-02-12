@@ -63,7 +63,7 @@ function Header() {
           
           <li>
             <div className="dropdown">
-                <a href='#' className='nav-item mx-3 btn btn-light rounded-pill' onClick={handleDropdownToggle}>
+                <a  className='nav-item mx-3 btn btn-light rounded-pill' onClick={handleDropdownToggle}>
                   <FaAngleDown />
                 </a>
                 {isDropdownOpen && (

@@ -7,6 +7,10 @@ import Swal from 'sweetalert2';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import { BiMessageSquareDetail } from "react-icons/bi";
+import { FaRegHeart } from "react-icons/fa";
+import { Link } from 'react-router-dom';
+import { CiMenuKebab } from "react-icons/ci";
 
 const Album = () => {
   const userID = sessionStorage.getItem('UserID') || 0;
@@ -158,7 +162,7 @@ const Album = () => {
   }, []);
 
   return (
-    <div className='row' >
+    <div className='d-flex'>
        <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Ganti Foto</Modal.Title>
@@ -180,85 +184,104 @@ const Album = () => {
             </Button>
           </Modal.Footer>
         </Modal>
-      <div className='col-3 border text-light me-3' style={{ background: "rgb(255,0,241)", position:"fixed", minHeight:"80%", borderRadius:"20px", 
-        background:"linear-gradient(0deg, rgba(255,0,241,0) 0%, rgba(89,18,162,1) 100%)"}}>
-        <div className='p-4'>
-            <div className='d-flex'>
-              <div className='col'>
-                <h3>{albumData.NamaAlbum}</h3>
-                <p className='blockquote-footer text-light py-2'>{albumData.TanggalDibuat}</p>
+        <div className='col text-light me-3' style={{ background: "rgb(255,0,241)", minHeight:"80%", borderRadius:"20px", 
+          background:"linear-gradient(0deg, rgba(255,0,241,0) 200px, rgba(89,18,162,1) )"}}>
+          <div className='p-4'>
+              <div className='d-flex justify-content-between'>
+                <div className='col'>
+                  <h3>{albumData.NamaAlbum}</h3>
+                  <p className='blockquote-footer text-light py-2'>{albumData.TanggalDibuat}</p>
+                </div>
+                { userID == albumData.UserID ? (
+                <div>
+                  <a href='#' className='text-light' onClick={handleShow}><FaPen /></a>
+                </div>) : null}
               </div>
-              { userID == albumData.UserID ? (
-              <div className='col-1 align-items-center'>
-                <a href='#' className='text-light' onClick={handleShow}><FaPen /></a>
-              </div>) : null}
+              <div className="d-flex justify-content-between mb-3" style={{ fontSize: "16px" }}>
+                <div className='col d-flex align-items-center'>
+                  <img
+                    src={albumData.FileFoto ? albumData.FileFoto :'../../public/profile.jpg'}
+                    className="border rounded-circle"
+                    style={{ width: "40px", height: "40px" }}
+                    alt="Profile"
+                  />
+                  <p className='m-0 mx-2 text-center'>{albumData.Username ? albumData.Username : 'unknown'}</p>
+                </div>    
+                <div className='col'></div>
+              </div>
+              
+              <div>
+                <p>{albumData.Deskripsi}</p>
+              </div>
+              <div className='col bg-light p-3 rounded'>
+              <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 5 }}>
+                <Masonry gutter="16px">
+                  {images.map((image) => (
+                    <div key={image.FotoID} style={{ position: 'relative', marginBottom: '16px', cursor: 'pointer' }}>
+                    <div onClick={() => detailImage(image.FotoID)}>
+                      <img
+                        src={image.LokasiFile}
+                        style={{
+                          width: '100%',
+                          display: 'block',
+                          borderRadius: '10px',
+                          cursor: 'zoom-in',
+                        }}
+                        alt={image.JudulFoto}
+                        onMouseEnter={(e) => (e.currentTarget.style.filter = 'brightness(0.8)')}
+                        onMouseLeave={(e) => (e.currentTarget.style.filter = 'brightness(1)')}
+                        className="ok"
+                        />
+                        </div>
+                        <div className='text-dark'>
+                        <div className='d-flex justify-content-between align-items-center'>
+                          {image.JudulFoto &&
+                            <blockquote className="blockquote my-2"  onClick={() => detailImage(image.FotoID)}>
+                              <p className="mb-0 h6 mt-2">{image.JudulFoto}</p>
+                            </blockquote>
+                          }
+                          <div className='col-1'>
+                          {userID === image.UserID && (
+                            <>
+                              <a  className='text-dark' onClick={() => toggleDropdown(image.FotoID)}>
+                              <CiMenuKebab />
+                              </a>
+                              {dropdownState[image.FotoID] && (
+                                    <ul className="dropdown-menu" style={{right:0,zIndex:1}}>
+                                      <li><Link to={`/edit-image/${image.FotoID}`} className="dropdown-item">Edit</Link></li>
+                                      <li><Link onClick={() => handleDelete(image.FotoID)} className="dropdown-item">Delete</Link></li>
+                                    </ul>
+                              )}
+                              </>
+                            )}
+                          </div>
+                      </div>
+                      <div className="d-flex justify-content-between" style={{ fontSize: "12px" }}>
+                        <div className='col d-flex align-items-center'>
+                          <img
+                            src={image.FileFoto ? image.FileFoto : '../../public/profile.jpg'}
+                            className="border rounded-circle"
+                            style={{ width: "30px", height: "30px" }}
+                            alt="Profile"
+                            />
+                          <p className='m-0 mx-2 text-center'>{image.Username ? image.Username : 'unknown'}</p>
+                        </div>
+                        <div className='col-3 right d-flex align-items-center'  onClick={() => detailImage(image.FotoID)}>
+                          <span className='d-flex align-items-center me-1'><FaRegHeart className='me-1'/> {image.JumlahLike}</span>
+                          <span className='d-flex align-items-center'> 
+                            <BiMessageSquareDetail className='me-1'/> {image.JumlahKomentar}
+                          </span>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </Masonry>
+              </ResponsiveMasonry>
             </div>
-            <div className="d-flex justify-content-between mb-3" style={{ fontSize: "16px" }}>
-              <div className='col d-flex align-items-center'>
-                <img
-                  src={albumData.FileFoto ? albumData.FileFoto :'../../public/profile.jpg'}
-                  className="border rounded-circle"
-                  style={{ width: "40px", height: "40px" }}
-                  alt="Profile"
-                />
-                <p className='m-0 mx-2 text-center'>{albumData.Username ? albumData.Username : 'unknown'}</p>
-              </div>    
-            </div>
-            <div>
-              <p>{albumData.Deskripsi}</p>
             </div>
           </div>
-        </div>
-    <div className='col' style={{marginLeft:"30%"}}>
-      <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 4 }}>
-        <Masonry gutter="16px">
-        {images.map((image) => (
-          <div key={image.FotoID} style={{ position: 'relative',}}>
-            <div key={image.FotoID} style={{ position: 'relative', width: '100%', marginBottom: '16px',cursor:'pointer'}} onClick={() => detailImage(image.FotoID)}>
-              <img
-                src={image.LokasiFile}
-                style={{ width: '100%', display: 'block', borderRadius: '10px', border: '2px solid #a6a6a6', cursor: 'zoom-in'}}
-                alt={image.JudulFoto}
-                onMouseEnter={(e) => (  e.currentTarget.style.filter = 'brightness(0.8)')}
-                onMouseLeave={(e) => (  e.currentTarget.style.filter = 'brightness(1)')}
-              />
-              {image.JudulFoto && <p style={{ marginTop: '8px', textAlign: 'center' }} >{image.JudulFoto}</p>}
-            </div>
-              <div onClick={() => openDropdown(image.FotoID)} style={{ zIndex: -1, width:'30px', height:'30px',fontSize:'19px',textAlign:'center',position: 'absolute', top: '8px', right: '8px', cursor: 'pointer',  backgroundColor: '',zIndex: 1, borderRadius:'50%', transition: 'opacity 0.3s'}} onMouseEnter={(e) => ( e.currentTarget.style.backgroundColor = '#f2f2f2')}
-                onMouseLeave={(e) => ( e.currentTarget.style.backgroundColor = '')}>
-                <span>&#x022EE;</span>
-                {dropdownState[image.FotoID] && (
-                  <div
-                    onMouseEnter={() => openDropdown(image.FotoID)}
-                    onMouseLeave={() => {
-                      setTimeout(() => closeDropdown(image.FotoID), 300);
-                    }}
-                    style={{
-                      position: 'absolute',
-                      top: '100%',
-                      right: 0,
-                      background: '#ffffff',
-                      boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)',
-                      borderRadius: '5px',
-                      padding: '8px',
-                      zIndex: 2,
-                      width:'50px',
-                      fontSize:'10px'
-                    }}
-                  >
-                    <a href={`/edit-image/${image.FotoID}`}><p>Edit</p></a>
-                    <a href='#'onClick={() => handleDelete(image.FotoID)}><p>Delete</p></a>
-
-                  </div>
-                )}
-
-              </div>
-          </div>
-            
-          ))}
-        </Masonry>
-      </ResponsiveMasonry>  
-    </div>
+      
     </div>
   );
 };

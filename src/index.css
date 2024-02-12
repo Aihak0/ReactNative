@@ -1,8 +1,9 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  
-
+  margin: 0;
+  padding: 0;
+  height: 100%;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -60,6 +61,10 @@
 .nav-logo img{
   width:60px;
 
+}
+
+.Footer{
+  margin-top: auto;
 }
 
 

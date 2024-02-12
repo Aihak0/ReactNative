@@ -1,6 +1,10 @@
 
 
-
+.App{
+  margin: 0;
+  padding: 0;
+  height: 100%; 
+}
 
 .grid-container {
   display: grid;

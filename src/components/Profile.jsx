@@ -222,14 +222,14 @@ const Profile = () => {
                 onRequestClose={closeModal}
                 style={customStyles}
                 contentLabel="Example Modal"
-            >
+                >
                 <h4>Pilih Album</h4>
                 <select name="album" id="" className='form-a-control'  onChange={(e) =>
                     setFormData({
                     ...formData,
                     AlbumID: e.target.value
                     })
-                }>
+                  }>
                     {albums.map((album) => (
                         <option key={album.AlbumID} value={album.AlbumID}>{album.NamaAlbum}</option>
                     ))}
