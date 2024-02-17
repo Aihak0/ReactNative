@@ -10,8 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $Deskripsi = $_POST['Deskripsi'];
     $TanggalDibuat = $_POST['TanggalDibuat'];
     $UserID = $_POST['UserID'];
+    date_default_timezone_set('Asia/Jakarta');
+    $created_at = date('Y-m-d H:i:s');
 
-        $sql = "INSERT INTO album (NamaAlbum, Deskripsi, TanggalDibuat, UserID) VALUES ('$NamaAlbum', '$Deskripsi', '$TanggalDibuat', '$UserID')";
+        $sql = "INSERT INTO album (NamaAlbum, Deskripsi, TanggalDibuat, UserID, created_at) VALUES ('$NamaAlbum', '$Deskripsi', '$TanggalDibuat', '$UserID', '$created_at')";
 
         $result = mysqli_query($conn, $sql);
 

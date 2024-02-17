@@ -1,32 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './style.css';
 
 const EditImage = () => {
   const { id: imageId } = useParams();
+  const userID = sessionStorage.getItem('UserID') || 0;
+  const [albums, setAlbums] = useState([]);
+  const navigate = useNavigate();
 
   const [imageData, setImageData] = useState({
     FotoID:'',
     JudulFoto: '',
-    TanggalUnggah: '',
+    DeskripsiFoto: '',
     AlbumID: 0,
     UserID: 0,
   });
+
+  const fetchAlbum = async () => {
+    try {
+      const response = await axios.get(`http://localhost/GALERY-VITE/api/getAlbumUser.php?user_id=${userID}`);
+      setAlbums(response.data);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  };
   
   useEffect(() => {
     const fetchImageDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost/GALERY-VITE/api/getImageDetails.php?id=${imageId}`);
-        const imageDataFromApi = response.data;
-        
-        // Pilih data yang sesuai dengan FotoID jika ada, atau gunakan data dengan kunci 0 jika FotoID kosong
-        const selectedImageData = imageDataFromApi.FotoID ? imageDataFromApi[imageDataFromApi.FotoID] : imageDataFromApi[0];
-  
-        // Set state dengan data yang dipilih
-        setImageData(prevImageData => ({ ...prevImageData, ...selectedImageData }));
-        
+        const response = await axios.get(`http://localhost/GALERY-VITE/api/getImageDetails.php?id=${imageId}&UserID=${userID}&action=getDetailEditFoto`);
+       
+        if (response.data.error) {
+          Swal.fire({
+            icon: 'warning',
+            title: response.data.error === "1" ? 'Hmm?' : 'Ngapain?',
+            width: 400,
+            text: response.data.message,
+            backdrop: `
+              rgba(0,0,123,0.4)
+              url(${response.data.error === "1" ? "../../public/shocked-surprised.gif" : "../../public/sus-cat-cat-stare.gif"})
+              top
+            `,
+            allowOutsideClick: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate('/');
+            }
+          });
+          
+          
+        } else {
+          const imageDataFromApi = response.data;
+          const selectedImageData = imageDataFromApi.FotoID ? imageDataFromApi[imageDataFromApi.FotoID] : imageDataFromApi[0];
+
+          console.log(response.data);
+    
+          setImageData(prevImageData => ({ ...prevImageData, ...selectedImageData }));
+          
+        }
+      
       } catch (error) {
         console.error('Error fetching image details:', error);
       }
@@ -37,7 +71,7 @@ const EditImage = () => {
   
 
   useEffect(() => {
-    // Lakukan tindakan apa pun yang diperlukan setelah LokasiFile berubah
+    fetchAlbum();
     console.log('LokasiFile berubah:', imageData.LokasiFile);
   }, [imageData.LokasiFile]);
   
@@ -65,11 +99,11 @@ const EditImage = () => {
           }
         });
       } else {
-        // Show a SweetAlert error message if needed
+       
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Gagal mengupdate gambar.',
+          text: 'Gagal mengupdate gambar.' + response.data,
         });
       }
 
@@ -93,22 +127,28 @@ const EditImage = () => {
   };
 
   return (
-    <div className='row-a'>
-      <div className='col-a-sm'>
-        <img
-          src={imageData.LokasiFile ? imageData.LokasiFile : '../../assets/select-image.jpeg'}
-          id="preview-image"
-          alt="Preview"
-          style={{ width: '100%', border: '3px solid #adadad', borderRadius: '10px'}}
-        />
+    <>
+    <h4 className='header'>Edit Foto</h4>
+    <p className='blockquote-footer py-2'>Edit Detail Gambar</p>
+    <div className='row mb-3'>
+      <div className='col-3 me-3' style={{height: "100%"}}>
+        <div style={{width: "100%", height: "70vh", display: 'block'}}>
+          <img
+            src={imageData.LokasiFile ? imageData.LokasiFile : '../../assets/select-image.jpeg'}
+            id="preview-image"
+            alt="Preview"
+            className='rounded border border-secondary bg-light'
+            style={{ width: '100%', height: '100%', borderRadius: '10px', objectFit: "contain" }}
+          />
+        </div>
       </div>
-      <div className='col-a'>
+      <div className='col'>
       <form>
-        <div className="form-a-group row-a">
-          <label htmlFor="JudulFoto" className="col-a-sm-2 col-a-form-label">Judul Foto</label>
-          <div className="col-a-sm-10">
+        <div className="form-group row mb-3">
+          <label htmlFor="JudulFoto" className="form-label">Judul Foto</label>
+          <div className="col">
             <input
-              className="form-a-control"
+              className="form-control"
               type="text"
               name='JudulFoto'
               id='JudulFoto'
@@ -117,29 +157,45 @@ const EditImage = () => {
             />
           </div>
         </div>
-        <div className="form-a-group row-a">
-          <label htmlFor="TanggalUnggah" className="col-a-sm-2 col-a-form-label">Tanggal Unggah</label>
-          <div className="col-a-sm-10">
-            <input className="form-a-control" type="date" name='TanggalUnggah' id='TanggalUnggah' value={imageData.TanggalUnggah} onChange={handleInputChange} />
+        <div className="form-group row mb-3">
+          <label htmlFor="DeskripsiFoto" className="form-label">Deskripsi</label>
+          <div className="col">
+            <textarea className="form-control" name="DeskripsiFoto" id="DeskripsiFoto" cols="10" rows="5" value={imageData.DeskripsiFoto} onChange={handleInputChange}>
+            </textarea>
           </div>
         </div>
-        <div className="form-a-group row-a">
-          <label htmlFor="AlbumID" className="col-a-sm-2 col-a-form-label">ID Album</label>
-          <div className="col-a-sm-10">
-            <input className="form-a-control" type="number" name='AlbumID' id='AlbumID'  value={imageData.AlbumID} onChange={handleInputChange} />
+        <div className="form-group row mb-3">
+          <label htmlFor="AlbumID" className="form-label">Album</label>
+          <div className="">
+          <select
+              className='form-select selectpicker'
+              name="AlbumID"
+              id="AlbumID"
+              onChange={handleInputChange}
+              data-live-search="true" 
+          >
+              {albums.length > 0 ? (
+                  <>
+                      <option value="0">Pilih</option>
+                      {albums.map((album) => (
+                          <option key={album.AlbumID} value={album.AlbumID} selected={imageData.AlbumID == album.AlbumID}>{album.NamaAlbum}</option>
+                      ))}
+                  </>
+              ) : (
+                  <option value="0" disabled>Anda tidak memiliki album</option>
+              )}
+          </select>
+
           </div>
         </div>
-        <div className="form-a-group row-a">
-          <label htmlFor="UserID" className="col-a-sm-2 col-a-form-label">ID User</label>
-          <div className="col-a-sm-10">
-            <input className="form-a-control" type="number" name='UserID' id='UserID' value={imageData.UserID} onChange={handleInputChange} />
-          </div>
+        <div className='float-end'>
+          <a href="/"><button className='btn btn-light mx-3'>Close</button></a>
+          <button className='btn btn-success' onClick={handleEditSubmit}>Simpan</button>
         </div>
-        <a href="/"><button className='btn-a m-a-1'>Close</button></a>
-        <button className='btn-a btn-a-success' onClick={handleEditSubmit}>Simpan</button>
       </form>
       </div>
     </div>
+    </>
   );
 };
 

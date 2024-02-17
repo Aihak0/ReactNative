@@ -7,6 +7,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
 import { CiMenuKebab } from "react-icons/ci";
+import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
 
 const ImageGallery = ({selectedFilter }) => {
   const [dropdownState, setDropdownState] = useState({});
@@ -51,7 +52,25 @@ const ImageGallery = ({selectedFilter }) => {
     navigate('/album/' + AlbumID);
   };
 
+  const handleDeleteConfirmation = (fotoID) => {
+    Swal.fire({
+      title: 'Apakah Anda yakin menghapus?'+ fotoID,
+      text: "Anda tidak akan dapat mengembalikan ini!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await handleDelete(fotoID);
+      }
+    });
+  };
+
   const handleDelete = async (fotoID) => {
+    
     try {
       const response = await axios.post(`http://localhost/GALERY-VITE/api/deleteImage.php?id=${fotoID}`);
       if (response.data.success) {
@@ -62,11 +81,12 @@ const ImageGallery = ({selectedFilter }) => {
           text: 'Berhasil Menghapus!',
         }).then((result) => {
           if (result.isConfirmed || result.isDismissed) {
-            location.reload();
+            fetchImages();
           }
         });
       } else {
         // Show a SweetAlert error message if needed
+         console.error('Response:', response.data);
         Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -88,11 +108,8 @@ const ImageGallery = ({selectedFilter }) => {
     try {
       const response = await axios.get('http://localhost/GALERY-VITE/api/getFoto.php');
       const selectedImageData = response.data ? response.data : [];
-  
-      // Menampilkan data yang diterima dari server di console
       console.log('Data yang diterima:', selectedImageData);
-  
-      // Set state dengan data yang diterima dari server
+
       setImages(selectedImageData);
     } catch (error) {
       console.error('Error fetching images:', error);
@@ -132,7 +149,7 @@ const ImageGallery = ({selectedFilter }) => {
                       <img
                         src={image.UserFoto ? image.UserFoto : '../../public/profile.jpg'}
                         className="border rounded-circle"
-                        style={{ width: "30px", height: "30px" }}
+                        style={{ width: "20px", height: "20px" }}
                         alt="Profile"
                       />
                       <p className='m-0 mx-2 text-center'>{image.Username ? image.Username : 'unknown'}</p>
@@ -143,59 +160,56 @@ const ImageGallery = ({selectedFilter }) => {
             ))}
           </div>
         </div>
-        <h5 className='m-2'>More</h5>
-        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 5 }}>
-          <Masonry gutter="16px">
-            {images.all.map((image,index) => (
-              <div key={index} style={{ position: 'relative', marginBottom: '16px', cursor: 'pointer' }}>
-              <div onClick={() => detailImage(image.FotoID)}>
-                <img
-                  src={image.LokasiFile}
-                  style={{
-                    width: '100%',
-                    display: 'block',
-                    borderRadius: '10px',
-                    cursor: 'zoom-in',
-                  }}
-                  alt={image.JudulFoto}
-                  onMouseEnter={(e) => (e.currentTarget.style.filter = 'brightness(0.8)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.filter = 'brightness(1)')}
-                  className="ok"
-                  />
-                  </div>
-                  <div className='d-flex justify-content-between align-items-center'>
-                    {image.JudulFoto &&
-                      <blockquote className="blockquote my-2"  onClick={() => detailImage(image.FotoID)}>
-                        <p className="mb-0 h6 mt-2">{image.JudulFoto}</p>
-                      </blockquote>
-                    }
-                    <div className='col-1'>
-                    {userID === image.UserID && (
-                      <>
-                        <a  className='text-dark' onClick={() => toggleDropdown(image.FotoID)}>
-                        <CiMenuKebab />
-                        </a>
-                        {dropdownState[image.FotoID] && (
-                              <ul className="dropdown-menu" style={{right:0,zIndex:1}}>
-                                <li><Link to={`/edit-image/${image.FotoID}`} className="dropdown-item">Edit</Link></li>
-                                <li><Link onClick={() => handleDelete(image.FotoID)} className="dropdown-item">Delete</Link></li>
-                              </ul>
-                        )}
-                        </>
+        <div className='justify-content-start my-2 pb-2'>
+        <h5 className='m-2'></h5>
+          <div className="image-gallery">
+          {images.all.map((image,index) => (
+            <div key={index} className='kolom-gambar'>
+              <div className='image-container'  onClick={() => detailImage(image.FotoID)}>
+                <img src={image.LokasiFileMin} alt={image.JudulFoto}
+                    onMouseEnter={(e) => (e.currentTarget.style.filter = 'brightness(0.8)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.filter = 'brightness(1)')} />
+              </div>
+              <div className='d-flex justify-content-between align-items-center'>
+                {image.JudulFoto &&
+                  <blockquote className="blockquote my-2 "  onClick={() => detailImage(image.FotoID)}>
+                    <p className="mb-0 h6 mt-2 ">{image.JudulFoto}</p>
+                  </blockquote>
+                }
+                <div className='float-end'>
+                {userID === image.UserID && (
+                  <>
+                    <a className='text-dark btn btn-outline-light btn-sm rounded-circle' style={{ position: 'relative', cursor:"pointer"}} onClick={() => toggleDropdown(image.FotoID)}>
+                      <CiMenuKebab />
+                      {dropdownState[image.FotoID] && (
+                        <ul className="list-group text-start" style={{width:"100px", position: 'absolute', top: '100%', right: 0,zIndex:1}}>
+                          <Link to={`/edit-image/${image.FotoID}`} className="list-group-item list-group-item-action">
+                            <RiEdit2Line /> Edit
+                          </Link>
+
+                          <Link onClick={() => handleDeleteConfirmation(image.FotoID)} className="list-group-item list-group-item-action">
+                            <RiDeleteBinLine /> Delete
+                          </Link>
+                        </ul>
                       )}
-                    </div>
+                    </a>
+
+                    </>
+                  )}
                 </div>
-                <div className="d-flex justify-content-between" style={{ fontSize: "12px" }}>
-                  <div className='col d-flex align-items-center'>
-                    <img
-                      src={image.FileFoto ? image.FileFoto : '../../public/profile.jpg'}
-                      className="border rounded-circle"
-                      style={{ width: "30px", height: "30px" }}
-                      alt="Profile"
-                    />
-                    <p className='m-0 mx-2 text-center'>{image.Username ? image.Username : 'unknown'}</p>
-                  </div>
-                  <div className='col-3 right d-flex align-items-center'  onClick={() => detailImage(image.FotoID)}>
+              </div>
+              <div className="d-flex justify-content-between" style={{ fontSize: "12px" }}>
+                <div className='col d-flex align-items-center'>
+                  <img
+                    src={image.FileFoto ? image.FileFoto : '../../public/profile.jpg'}
+                    className="border rounded-circle"
+                    style={{ width: "20px", height: "20px" }}
+                    alt="Profile"
+                  />
+                  <p className='m-0 mx-2 text-center'>{image.Username ? image.Username : 'unknown'}</p>
+                </div>
+                <div className='float-end align-items-center'  onClick={() => detailImage(image.FotoID)}>
+                  <div className='d-flex align-items-center'>
                     <span className='d-flex align-items-center me-1'><FaRegHeart className='me-1'/> {image.JumlahLike}</span>
                     <span className='d-flex align-items-center'> 
                       <BiMessageSquareDetail className='me-1'/> {image.JumlahKomentar}
@@ -203,9 +217,11 @@ const ImageGallery = ({selectedFilter }) => {
                   </div>
                 </div>
               </div>
-            ))}
-          </Masonry>
-        </ResponsiveMasonry>
+              
+            </div>
+          ))}
+          </div>
+        </div>
         </>
         ) : selectedFilter == 'album' ? (
         <>
@@ -241,58 +257,53 @@ const ImageGallery = ({selectedFilter }) => {
           </div>
         </>) : selectedFilter == 'fav' ? (
         <>
-       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 5 }}>
-          <Masonry gutter="16px">
-            {images.fav.map((image,index) => (
-              <div key={index} style={{ position: 'relative', marginBottom: '16px', cursor: 'pointer' }}>
-              <div onClick={() => detailImage(image.FotoID)}>
-                <img
-                  src={image.LokasiFile}
-                  style={{
-                    width: '100%',
-                    display: 'block',
-                    borderRadius: '10px',
-                    cursor: 'zoom-in',
-                  }}
-                  alt={image.JudulFoto}
-                  onMouseEnter={(e) => (e.currentTarget.style.filter = 'brightness(0.8)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.filter = 'brightness(1)')}
-                  className="ok"
-                  />
-                  </div>
-                  <div className='d-flex justify-content-between align-items-center'>
-                    {image.JudulFoto &&
-                      <blockquote className="blockquote my-2"  onClick={() => detailImage(image.FotoID)}>
-                        <p className="mb-0 h6 mt-2">{image.JudulFoto}</p>
-                      </blockquote>
-                    }
-                    <div className='col-1'>
-                    {userID === image.UserID && (
-                      <>
-                        <a  className='text-dark' onClick={() => toggleDropdown(image.FotoID)}>
-                        <CiMenuKebab />
-                        </a>
-                        {dropdownState[image.FotoID] && (
-                              <ul className="dropdown-menu" style={{right:0,zIndex:1}}>
-                                <li><Link to={`/edit-image/${image.FotoID}`} className="dropdown-item">Edit</Link></li>
-                                <li><Link onClick={() => handleDelete(image.FotoID)} className="dropdown-item">Delete</Link></li>
-                              </ul>
-                        )}
-                        </>
+          <div className="image-gallery">
+          {images.all.map((image,index) => (
+            <div key={index} className='kolom-gambar'>
+              <div className='image-container'  onClick={() => detailImage(image.FotoID)}>
+                <img src={image.LokasiFileMin} alt={image.JudulFoto}
+                    onMouseEnter={(e) => (e.currentTarget.style.filter = 'brightness(0.8)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.filter = 'brightness(1)')} />
+              </div>
+              <div className='d-flex justify-content-between align-items-center'>
+                {image.JudulFoto &&
+                  <blockquote className="blockquote my-2"  onClick={() => detailImage(image.FotoID)}>
+                    <p className="mb-0 h6 mt-2">{image.JudulFoto}</p>
+                  </blockquote>
+                }
+                <div className='float-end'>
+                {userID === image.UserID && (
+                  <>
+                    <a className='text-dark btn btn-outline-light btn-sm rounded-circle' style={{ position: 'relative', cursor:"pointer"}} onClick={() => toggleDropdown(image.FotoID)}>
+                      <CiMenuKebab />
+                      {dropdownState[image.FotoID] && (
+                        <ul className="list-group text-start" style={{width:"100px", position: 'absolute', top: '100%', right: 0,zIndex:1}}>
+                          <Link to={`/edit-image/${image.FotoID}`} className="list-group-item list-group-item-action">
+                            <RiEdit2Line /> Edit
+                          </Link>
+
+                          <Link onClick={() => handleDeleteConfirmation(image.FotoID)} className="list-group-item list-group-item-action">
+                            <RiDeleteBinLine /> Delete
+                          </Link>
+                        </ul>
                       )}
-                    </div>
+                    </a>
+                    </>
+                  )}
                 </div>
-                <div className="d-flex justify-content-between" style={{ fontSize: "12px" }}>
-                  <div className='col d-flex align-items-center'>
-                    <img
-                      src={image.FileFoto ? image.FileFoto : '../../public/profile.jpg'}
-                      className="border rounded-circle"
-                      style={{ width: "30px", height: "30px" }}
-                      alt="Profile"
-                    />
-                    <p className='m-0 mx-2 text-center'>{image.Username ? image.Username : 'unknown'}</p>
-                  </div>
-                  <div className='col-3 right d-flex align-items-center'  onClick={() => detailImage(image.FotoID)}>
+              </div>
+              <div className="d-flex justify-content-between" style={{ fontSize: "12px" }}>
+                <div className='col d-flex align-items-center'>
+                  <img
+                    src={image.FileFoto ? image.FileFoto : '../../public/profile.jpg'}
+                    className="border rounded-circle"
+                    style={{ width: "20px", height: "20px" }}
+                    alt="Profile"
+                  />
+                  <p className='m-0 mx-2 text-center'>{image.Username ? image.Username : 'unknown'}</p>
+                </div>
+                <div className='float-end align-items-center'  onClick={() => detailImage(image.FotoID)}>
+                  <div className='d-flex align-items-center'>
                     <span className='d-flex align-items-center me-1'><FaRegHeart className='me-1'/> {image.JumlahLike}</span>
                     <span className='d-flex align-items-center'> 
                       <BiMessageSquareDetail className='me-1'/> {image.JumlahKomentar}
@@ -300,9 +311,10 @@ const ImageGallery = ({selectedFilter }) => {
                   </div>
                 </div>
               </div>
-            ))}
-          </Masonry>
-        </ResponsiveMasonry>
+              
+            </div>
+          ))}
+          </div>
         </>) : null}
       
     </div>

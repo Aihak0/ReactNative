@@ -32,7 +32,7 @@ function Login() {
 
       if (response.data.success) {
 
-        setLogin(response.data.id);
+        setLogin(response.data.id,response.data.Username, response.data.FileFoto );
         
             // Rest of the code
         Swal.fire({

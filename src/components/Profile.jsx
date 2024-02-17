@@ -1,11 +1,17 @@
 import React, { useState,useEffect } from 'react';
 import "./style.css";
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { FaPlus } from "react-icons/fa";
-import Modal from 'react-modal';
+import { FaPlus, FaRegHeart } from "react-icons/fa";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import { CiMenuKebab } from "react-icons/ci";
+import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
+import { BiMessageSquareDetail } from "react-icons/bi";
+import { LuPlusCircle } from "react-icons/lu";
+import moment from 'moment-timezone';
 
 const customStyles = {
     content: {
@@ -27,52 +33,97 @@ const Profile = () => {
     const [images, setImages] = useState([]);
     const [albums, setAlbums] = useState([]);
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
+    const [formDataAlbum, setFormDataAlbum] = useState({
         AlbumID:0 ,
         FotoID: 0,
       });
       const [user, setUser] = useState({
         UserID:0,
         Username: 'Unnamed',
+        FileFoto: null,
         Email: '',
         NamaLengkap: '',
         Alamat: '',
       });
 
 
-    const [modalIsOpen, setIsOpen] = React.useState(false);
+      const [show, setShow] = useState(false);
+      const handleClose = () => setShow(false);
+        const handleShow = (FotoID, AlbumID) => {
+          setFormDataAlbum({
+            ...formDataAlbum,
+            FotoID: FotoID,
+            AlbumID: AlbumID
+          })
+          setShow(true);
+        }
+    function formatTime(time){
+      moment.tz.setDefault('Asia/Jakarta');
 
-    function openModal(photoId) {
+      // Mendapatkan waktu saat ini dalam zona waktu WIB
+      const waktuKomentar = time; // Ganti dengan waktu komentar yang diterima dari server atau dari sumber lain
+      const waktuSekarang = moment();
+      const waktuKomentarFormatted = moment(waktuKomentar);
+      const selisih = waktuSekarang.diff(waktuKomentarFormatted, 'seconds');
+  
+      // Format waktu relatif
+      let waktuRelative;
+      if (selisih < 60) {
+        waktuRelative = "baru saja";
+      } else if (selisih < 3600) {
+        waktuRelative = Math.floor(selisih / 60) + " menit yang lalu";
+      } else if (selisih < 86400) {
+        waktuRelative = Math.floor(selisih / 3600) + " jam yang lalu";
+      } else if (selisih < 604800) {
+        waktuRelative = Math.floor(selisih / 86400) + " hari yang lalu";
+      } else if (selisih < 2592000) {
+        waktuRelative = Math.floor(selisih / 604800) + " minggu yang lalu";
+      } else if (selisih < 31536000) {
+        waktuRelative = Math.floor(selisih / 2592000) + " bulan yang lalu";
+      } else {
+        waktuRelative = Math.floor(selisih / 31536000) + " tahun yang lalu";
+      }
+  
+      // Menyimpan waktu dalam state
+      return waktuRelative;
+  
 
-        setFormData({
-              ...formData,
-              FotoID: photoId
-            })
-      setIsOpen(true);
-    }
-  
-    function afterOpenModal() {
-    }
-  
-    function closeModal() {
-      setIsOpen(false);
     }
     
-
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      iconColor: 'white',
+      customClass: {
+        popup: 'colored-toast',
+      },
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+    })
 
     const openDropdown = (fotoID) => {
-        setDropdownState((prevState) => ({
+      setDropdownState((prevState) => ({
         ...prevState,
         [fotoID]: true,
-        }));
+      }));
     };
-
+  
     const closeDropdown = (fotoID) => {
-        setDropdownState((prevState) => ({
+      setDropdownState((prevState) => ({
         ...prevState,
         [fotoID]: false,
-        }));
+      }));
     };
+  
+    const toggleDropdown = (fotoID) => {
+      if (dropdownState[fotoID] == true) {
+        closeDropdown(fotoID);
+      } else {
+        openDropdown(fotoID);
+      }
+    };
+
     const detailImage = (fotoID) => {
         navigate('/detail/'+fotoID);
     };
@@ -83,16 +134,23 @@ const Profile = () => {
     const handleSaveToAlbum = async () => {
         try {
             const formDataToSend = new FormData();
-            Object.entries(formData).forEach(([key, value]) => {
+            Object.entries(formDataAlbum).forEach(([key, value]) => {
                 formDataToSend.append(key, value);
             });
-            console.log(formData);
+            console.log(formDataAlbum);
             const response = await axios.post('http://localhost/GALERY-VITE/api/updateAlbum.php',formDataToSend);
             if (response.data.success) {
-               console.log("berhasil");
+               Toast.fire({
+                icon: 'success',
+                title: response.data.message,
+              })
                fetchAlbum();
                fetchImages();
             } else {
+              Toast.fire({
+                icon: 'error',
+                title: response.data.message,
+              })
               console.log("gagal");
               console.log(response.data);
             }
@@ -100,10 +158,25 @@ const Profile = () => {
             } catch (error) {
             console.error('Error inserting data:', error);
             }
-        closeModal();
+        handleClose();
       };
 
-     
+      const handleDeleteConfirmation = (fotoID) => {
+        Swal.fire({
+          title: 'Apakah Anda yakin menghapus?'+ fotoID,
+          text: "Anda tidak akan dapat mengembalikan ini!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus!',
+          cancelButtonText: 'Batal'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            await handleDelete(fotoID);
+          }
+        });
+      };
 
     const handleDelete = async (fotoID) => {
         try {
@@ -147,6 +220,7 @@ const Profile = () => {
       try {
         const response = await axios.get(`http://localhost/GALERY-VITE/api/getFotoUser.php?user_id=${userID}`);
         setImages(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching images:', error);
       }
@@ -180,30 +254,12 @@ const Profile = () => {
         console.log(user);
       }, []);
 
-      const containerStyle = {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#644f75',
-        cursor: 'pointer',
-        padding: '20px',
-        height: '200px',
-        color: 'white',
-        borderRadius: '10px',
-        textAlign: 'center',
-      };
-      
-      const redBoxStyle = {
-        width: '100%',
-        height: '125px', // Set tinggi sesuai kebutuhan Anda
-      };
   
     return (
         <>
             <div className="ProfileContainer">
                 <div className="Profile">
-                    <img src="../../public/profile.jpg" alt="Profile" />
+                    <img src={user.FileFoto ? user.FileFoto : "../../public/profile.jpg"} className='border' alt="Profile" />
                     <h1>{user.Username}</h1>
                 </div>
             </div>
@@ -216,79 +272,91 @@ const Profile = () => {
                 Album
                 </a>
             </div>
-            <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Example Modal"
-                >
-                <h4>Pilih Album</h4>
-                <select name="album" id="" className='form-a-control'  onChange={(e) =>
-                    setFormData({
-                    ...formData,
-                    AlbumID: e.target.value
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Pilih Album</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <select name="album" id="" className='form-control' value={formDataAlbum.AlbumID} onChange={(e) =>
+                    setFormDataAlbum({
+                      ...formDataAlbum,
+                      AlbumID: e.target.value
                     })
                   }>
                     {albums.map((album) => (
-                        <option key={album.AlbumID} value={album.AlbumID}>{album.NamaAlbum}</option>
+                      <option key={album.AlbumID} value={album.AlbumID}>{album.NamaAlbum}</option>
                     ))}
-                </select>
-                <button onClick={handleSaveToAlbum}>Simpan</button>
+                  </select>
+
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="light" className='rounded-pill' onClick={handleClose}>
+                  Tutup
+                </Button>
+                <Button variant="primary" className='rounded-pill' onClick={handleSaveToAlbum} disabled={!formDataAlbum.AlbumID}>
+                  Simpan
+                </Button>
+              </Modal.Footer>
             </Modal>
-            <div className="ContainerContent">
-                <div className={`foto ${activeTab === 'foto' ? 'active' : ''}`}>
-                <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 5 }}>
-                    <Masonry gutter="16px">
-                    {images.map((image) => (
-                        <div key={image.FotoID} style={{ position: 'relative',}}>
-                        <div key={image.FotoID} style={{ position: 'relative', width: '100%', marginBottom: '16px',cursor:'pointer'}} onClick={() => detailImage(image.FotoID)}>
-                            <img
-                            src={image.LokasiFile}
-                            style={{ width: '100%', display: 'block', borderRadius: '10px', border: '2px solid #a6a6a6', cursor: 'zoom-in'}}
-                            alt={image.JudulFoto}
-                            onMouseEnter={(e) => (  e.currentTarget.style.filter = 'brightness(0.8)')}
-                            onMouseLeave={(e) => (  e.currentTarget.style.filter = 'brightness(1)')}
-                            />
-                            {image.JudulFoto && <p style={{ marginTop: '8px', textAlign: 'center' }} >{image.JudulFoto}</p>}
-                        </div>
-                            <div onClick={() => openDropdown(image.FotoID)} style={{ zIndex: -1, width:'30px', height:'30px',fontSize:'19px',textAlign:'center',position: 'absolute', top: '8px', right: '8px', cursor: 'pointer',  backgroundColor: '',zIndex: 1, borderRadius:'50%', transition: 'opacity 0.3s'}} onMouseEnter={(e) => ( e.currentTarget.style.backgroundColor = '#f2f2f2')}
-                            onMouseLeave={(e) => ( e.currentTarget.style.backgroundColor = '')}>
-                            <span>&#x022EE;</span>
-                            {dropdownState[image.FotoID] && (
-                                <div
-                                onMouseEnter={() => openDropdown(image.FotoID)}
-                                onMouseLeave={() => {
-                                    setTimeout(() => closeDropdown(image.FotoID), 300);
-                                }}
-                                style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    right: 0,
-                                    background: '#ffffff',
-                                    boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)',
-                                    borderRadius: '5px',
-                                    padding: '8px',
-                                    zIndex: 2,
-                                    width:'50px',
-                                    fontSize:'10px'
-                                }}
-                                >
-                                <a href={`/edit-image/${image.FotoID}`}><p>Edit</p></a>
-                                <a href='#'onClick={() => handleDelete(image.FotoID)}><p>Delete</p></a>
-                                <a href='#' onClick={() => openModal(image.FotoID)}>
-                                    <p>+ Album</p>
-                                </a>
+            <div className="ContainerContent my-4">
+              <div  className={`justify-content-start pb-2 foto ${activeTab === 'foto' ? 'active' : ''}`}>
+                <h5 className='m-2'></h5>
+                  <div className="image-gallery">
+                  {images.map((image,index) => (
+                    <div key={index} className='kolom-gambar-1'>
+                      <div className='image-container-1'  onClick={() => detailImage(image.FotoID)}>
+                        <img src={image.LokasiFileMin} alt={image.JudulFoto}
+                            onMouseEnter={(e) => (e.currentTarget.style.filter = 'brightness(0.8)')}
+                            onMouseLeave={(e) => (e.currentTarget.style.filter = 'brightness(1)')} />
+                      </div>
+                      <div className='d-flex justify-content-between align-items-center'>
+                        {image.JudulFoto &&
+                          <blockquote className="blockquote my-2 "  onClick={() => detailImage(image.FotoID)}>
+                            <p className="mb-0 h6 mt-2 text-truncate" style={{maxWidth:"160px"}}>{image.JudulFoto}</p>
+                          </blockquote>
+                        }
+                        <div className='float-end'>
+                        {userID === image.UserID && (
+                          <>
+                            <a className='text-dark btn btn-outline-light btn-sm rounded-circle' style={{ position: 'relative', cursor:"pointer"}} onClick={() => toggleDropdown(image.FotoID)}>
+                              <CiMenuKebab />
+                              {dropdownState[image.FotoID] && (
+                                <ul className="list-group text-start" style={{width:"100px", position: 'absolute', top: '100%', right: 0,zIndex:1}}>
+                                  <Link to={`/edit-image/${image.FotoID}`} className="list-group-item list-group-item-action">
+                                    <RiEdit2Line /> Edit
+                                  </Link>
 
-                                </div>
-                            )}
+                                  <Link onClick={() => handleDeleteConfirmation(image.FotoID)} className="list-group-item list-group-item-action">
+                                    <RiDeleteBinLine /> Delete
+                                  </Link>
+                                  <Link onClick={() => handleShow(image.FotoID, image.AlbumID)} className="list-group-item list-group-item-action">
+                                    <LuPlusCircle /> Album
+                                  </Link>
+                                </ul>
+                              )}
+                            </a>
 
-                            </div>
+                            </>
+                          )}
                         </div>
-                        
-                        ))}
-                    </Masonry>
-                    </ResponsiveMasonry>
+                      </div>
+                      <div className="d-flex justify-content-between" style={{ fontSize: "11px" }}>
+                        <div className='col d-flex align-items-center'>
+                        <span className=''>{formatTime(image.created_at)}</span>
+                        </div>
+                        <div className='float-end align-items-center'  onClick={() => detailImage(image.FotoID)}>
+                          <div className='d-flex align-items-center'>
+                            <span className='d-flex align-items-center me-1'><FaRegHeart className='me-1 text-danger'/> {image.JumlahLike}</span>
+                            <span className='d-flex align-items-center'> 
+                              <BiMessageSquareDetail className='me-1 '/> {image.JumlahKomentar}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  ))}
+                  </div>
                 </div>
                 <div className={`album ${activeTab === 'album' ? 'active' : ''}`}>
                     <div className='row-a' style={{display: "flex", justifyContent: "space-between", marginBottom:"30px"}}>
@@ -301,19 +369,31 @@ const Profile = () => {
                             </a>   
                         </div>
                     </div>
-                    <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 4 }}>
-                        <Masonry gutter='16px'>
-                            {albums.map((album) => (
-                                <div key={album.AlbumID} style={containerStyle} onClick={() => detailAlbum(album.AlbumID)}>
-                                    <div style={redBoxStyle}>
-                                    <img style={{ width: '100%', height: '100%', borderRadius:"10px", objectFit: 'cover'
-                                    }} src={album.LokasiFile ? album.LokasiFile : '../../assets/select-image.jpeg'} alt="" />
-                                    </div>
-                                    <h5 style={{ marginBottom: '5px' }}>{album.NamaAlbum}</h5>
-                                </div>
-                            ))}
-                        </Masonry>
-                    </ResponsiveMasonry>
+                    <div className='d-grid gap-3' style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(262.50px, 1px))' }}>
+                      {albums.map((album,index) => (
+                        <div key={index} className='' style={{ cursor:"pointer"}} onClick={() => detailAlbum(album.AlbumID)}>
+                          <div className=' d-flex' style={{ height:"150px"}}>
+                            <div className='col p-0 border me-1' style={{borderRadius:"10px 0 0 10px ", overflow: "hidden"}}>
+                                <img src={album.Foto1 ? album.Foto1 :"../../assets/select-image.jpeg"} className='w-100 h-100' alt="Foto" style={{objectFit: "cover",}}/>
+                            </div>
+                            <div className='col p-0 border ' style={{borderRadius:"0 10px 10px 0 ", overflow: "hidden"}}>
+                              <img src={album.Foto2 ? album.Foto2 :"../../assets/select-image.jpeg"} className='w-100 h-100' alt="Foto" style={{objectFit: "cover",}}/>
+                            </div>
+                          </div>
+                          <div className='mx-2'>
+                            <blockquote className="blockquote my-2">
+                              <p className="mb-0 h6 mt-2">{album.NamaAlbum}</p>
+                            </blockquote>
+                            <div className="d-flex justify-content-between" style={{ fontSize: "12px" }}>
+                              <div className='col d-flex align-items-center'>
+                              <span className=''>{formatTime(album.created_at)}</span>
+                              </div>    
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
                 
                 </div>
             </div>

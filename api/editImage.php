@@ -10,11 +10,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fotoID = $_POST['FotoID'];
     $judulFoto = $_POST['JudulFoto'];
     $tanggalUnggah = $_POST['TanggalUnggah'];
+    $DeskripsiFoto = $_POST['DeskripsiFoto'];
     $albumID = $_POST['AlbumID'];
     $userID = $_POST['UserID'];
 
     // Menyiapkan dan mengeksekusi query SQL untuk mengupdate data
-    $sql = "UPDATE foto SET JudulFoto='$judulFoto', TanggalUnggah='$tanggalUnggah', AlbumID=$albumID, UserID=$userID WHERE FotoID=$fotoID";
+    $sql = "UPDATE foto SET JudulFoto='$judulFoto', TanggalUnggah='$tanggalUnggah', AlbumID='$albumID', DeskripsiFoto='$DeskripsiFoto' WHERE FotoID=$fotoID";
 
     if ($conn->query($sql) === TRUE) {
         echo json_encode(array('success' => true, 'message' => 'Berhasil.'));

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute';
 import List from './components/List';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -48,7 +49,7 @@ function App() {
                   element={
                     <>
                       <Header />
-                      <div className="container p-0" style={{ marginTop: '140px' }}>
+                      <div className="container p-0" style={{ marginTop: '100px' }}>
                         <AddImageForm />
                       </div>
                       <div className='container' style={{marginTop:"auto"}}>
@@ -71,26 +72,29 @@ function App() {
                     </>
                   }
                 />
-            <Route
+           <Route
               path="/edit-image/:id"
               element={
                 <>
-                  <Header />
-                  <div className="container p-0" style={{ marginTop: '140px' }}>
-                    <EditImage />
-                  </div>
-                  <div className='container' style={{marginTop:"auto"}}>
-                    <Footer />
-                  </div>
+                  <PrivateRoute>
+                      <Header />
+                      <div className="container p-0" style={{ marginTop: '100px' }}>
+                        <EditImage />
+                      </div>
+                      <div className='container' style={{marginTop:"auto"}}>
+                        <Footer />
+                      </div>
+                  </PrivateRoute>
                 </>
               }
             />
+
             <Route
               path="/detail/:id"
               element={
                 <>
                   <Header />
-                  <div className="container p-0" style={{ marginTop: '140px' }}>
+                  <div className="container p-0" style={{ marginTop: '100px' }}>
                     <DetailImage />
                   </div>
                   <div className='container' style={{marginTop:"auto"}}>
@@ -117,13 +121,15 @@ function App() {
               path="/profile"
               element={
                 <>
-                  <Header />
-                  <div className="container p-0" style={{ marginTop: '140px' }}>
-                    <Profile />
-                  </div>
-                  <div className='container' style={{marginTop:"auto"}}>
-                    <Footer />
-                  </div>
+                   <PrivateRoute>
+                    <Header />
+                    <div className="container p-0" style={{ marginTop: '140px' }}>
+                      <Profile />
+                    </div>
+                    <div className='container' style={{marginTop:"auto"}}>
+                      <Footer />
+                    </div>
+                   </PrivateRoute>
                 </>
               }
             />
@@ -131,13 +137,15 @@ function App() {
               path="/setting"
               element={
                 <>
-                  <Header />
-                  <div className="container p-0" style={{ marginTop: '100px' }}>
-                    <Setting />
-                  </div>
-                  <div className='container' style={{marginTop:"auto"}}>
-                    <Footer />
-                  </div>
+                 <PrivateRoute>
+                    <Header />
+                    <div className="container p-0" style={{ marginTop: '100px' }}>
+                      <Setting />
+                    </div>
+                    <div className='container' style={{marginTop:"auto"}}>
+                      <Footer />
+                    </div>
+                 </PrivateRoute>
                 </>
               }
             />

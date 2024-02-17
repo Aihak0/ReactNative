@@ -14,10 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($result) {
 
-            echo json_encode(['success' => true, 'message' => 'Berhasil Tambah Album']);
+            echo json_encode(['success' => true, 'message' => 'Berhasil Menambahkan Ke Album']);
 
         } else {
-            echo json_encode(['success' => false, 'message' => 'Gagal']);
+            echo json_encode(['success' => false, 'message' => 'Gagal Menambahkan Ke Album']);
         }
 } else {
     echo json_encode(array('success' => false, 'message' => "Metode request tidak valid"));

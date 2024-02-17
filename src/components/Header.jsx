@@ -1,8 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useAuth } from './AuthContext';
+import axios from 'axios';
 import { FaAngleDown } from "react-icons/fa6";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
@@ -11,7 +12,16 @@ import 'bootstrap/dist/js/bootstrap.min.js';
 function Header() {
   const { isLoggedIn } = useAuth();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const userID = sessionStorage.getItem('UserID') || 0;
   const [isDropdownAlbumOpen, setDropdownAlbumOpen] = useState(false);
+  const [user, setUser] = useState({
+    UserID:0,
+    Username: 'Unnamed',
+    FileFoto: null,
+    Email: '',
+    NamaLengkap: '',
+    Alamat: '',
+  });
 
   const handleDropdownToggle = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -32,7 +42,6 @@ function Header() {
       confirmButtonText: "Ya"
     }).then((result) => {
       if (result.isConfirmed) {
-        sessionStorage.removeItem('UserID');
         logout();
         Swal.fire({
           title: "Anda Berhasil Logout!",
@@ -41,6 +50,25 @@ function Header() {
       }
     });
   };
+
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(`http://localhost/GALERY-VITE/api/getProfileDetail.php?user_id=${userID}`);
+      const userDataFromApi = response.data;
+      const selectedUserData = userDataFromApi.UserID ? userDataFromApi[userDataFromApi.UserID] : userDataFromApi[0];
+
+      setUser(prevUserData => ({ ...prevUserData, ...selectedUserData }));
+      
+    } catch (error) {
+      console.error('Error fetching User:', error);
+    }
+  };
+
+  useEffect(() => {
+    console.log(userID);
+   
+    fetchUser();
+  }, []);
 
 
   return (
@@ -62,13 +90,14 @@ function Header() {
           )}
           
           <li>
+          {isLoggedIn && (
             <div className="dropdown">
                 <a  className='nav-item mx-3 btn btn-light rounded-pill' onClick={handleDropdownToggle}>
                   <FaAngleDown />
                 </a>
                 {isDropdownOpen && (
                           <ul className="dropdown-menu" style={{right:0}}>
-                    {isLoggedIn && (
+         
                       <>
                           <li><Link to="/setting" className="dropdown-item">Setting</Link></li>
                           <li><Link to="/profile" className="dropdown-item">Profile</Link></li>
@@ -76,15 +105,17 @@ function Header() {
                           <li><Link to="#" className="dropdown-item" onClick={handleLogout}>Logout</Link></li>
                     </>
                         
-                    )}
                   </ul>
                   )}
               </div>
+                    )}
           </li>
           <li>
+          {isLoggedIn && (
                 <div className="nav-link-profile ">
-                  <img src="../../public/profile.jpg" alt="Profile" />
+                  <img src={ user.FileFoto ? user.FileFoto : "../../public/profile.jpg"} alt="Profile" />
                 </div>
+          )}
           </li>
         </ul>
       </nav>

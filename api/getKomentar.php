@@ -6,7 +6,7 @@ header("Access-Control-Allow-Headers: *");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $fotoID = $_GET['id'];
-    $query = "SELECT komentarfoto.*, user.Username FROM komentarfoto JOIN user ON komentarfoto.UserID = user.UserID WHERE FotoID = '$fotoID'";
+    $query = "SELECT komentarfoto.*, user.Username, user.FileFoto FROM komentarfoto JOIN user ON komentarfoto.UserID = user.UserID WHERE FotoID = '$fotoID' ORDER BY created_at DESC";
     $result = $conn->query($query);
     
     // Konversi hasil query ke format JSON

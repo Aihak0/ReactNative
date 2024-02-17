@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Successful login
                 $_SESSION['UserID'] = $user['UserID'];
                 $_SESSION['Username'] = $user['Username'];
-                $response = ['success' => true, 'message' => 'Login successful!', 'id' => $user['UserID']];
+                $response = ['success' => true, 'message' => 'Login successful!', 'id' => $user['UserID'], 'Username' => $user['Username'], 'FileFoto' => $user['FileFoto']];
                 echo json_encode($response);
             } else {
                 // Invalid credentials

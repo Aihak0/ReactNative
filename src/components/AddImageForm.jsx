@@ -80,7 +80,7 @@ const AddImageForm = () => {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Gagal menambahkan gambar.',
+          text: 'Gagal menambahkan gambar.' + response.data,
         });
       }
 
@@ -89,9 +89,10 @@ const AddImageForm = () => {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Gagal menambahkan gambar.',
+        text: 'Gagal menambahkan gambar.'+ error,
       });
       console.error('Error inserting data:', error);
+      console.error( response);
     }
   };
   const fetchAlbum = async () => {
@@ -106,32 +107,38 @@ const AddImageForm = () => {
     fetchAlbum();
   }, []);
     return (
+      <>
+      <div className='container mb-3' style={{padding:"0"}}>
+        <h4 className='header'>Upload Foto</h4>
+        <p className='blockquote-footer py-2'>Upload Foto atau Gambar</p>
         <form>
-          <div className='row-a'>
-            <div className='col-a-sm' onDrop={handleDrop} onDragOver={handleDragOver}>
+          <div className='row'>
+          <div className='col-3 me-3' style={{height: "100%"}} onDrop={handleDrop} onDragOver={handleDragOver}>
             <input
               type="file"
               id="image-input"
               accept="image/*"
               name='fileFoto'
               onChange={(e) => handleImageChange(e.target.files)}
-              style={{ display: 'none'}}
+              style={{display: 'none'}}
             />
-            <label htmlFor="image-input">
+            <label htmlFor="image-input" style={{width: "100%", height: "70vh", display: 'block'}}>
               <img
                 src={imagePreview || 'assets/select-image.jpeg'}
                 id="preview-image"
                 alt="Preview"
-                style={{ width: '100%', border: '3px solid #adadad', borderRadius: '10px', cursor: 'pointer' }}
-              />
+                className='rounded border border-secondary bg-light'
+                style={{width: '100%', height: '100%', borderRadius: '10px', cursor: 'pointer', objectFit: "contain"}}
+                />
             </label>
           </div>
-            <div className='col-a'>
-              <div className="form-a-group row-a">
-                <label htmlFor="JudulFoto" className="col-a-sm-2 col-a-form-label">Judul Foto</label>
-                <div className="col-a-sm-10">
+
+            <div className='col'>
+              <div className="form-group row mb-3">
+                <label htmlFor="JudulFoto" className="form-label">Judul Foto</label>
+                <div className="">
                   <input
-                    className="form-a-control"
+                    className="form-control"
                     type="text"
                     name='JudulFoto'
                     id='JudulFoto'
@@ -139,15 +146,15 @@ const AddImageForm = () => {
                   />
                 </div>
               </div>
-              <div className="form-a-group row-a">
-                <label for="DeskripsiFoto" className="col-a-sm-2 col-a-form-label">Deskripsi Foto</label>
-                <div className="col-a-sm-10">
+              <div className="form-group mb-3">
+                <label htmlFor="DeskripsiFoto" className="form-label">Deskripsi Foto</label>
+                <div className="">
                   <textarea className="form-control" name="DeskripsiFoto" id="DeskripsiFoto" cols="10" rows="5" onChange={handleInputChange}></textarea>
                 </div>
               </div>
-              <div className="form-a-group row-a">
-                <label for="AlbumID" className="col-a-sm-2 col-a-form-label">Album</label>
-                <div className="col-a-sm-10">
+              <div className="form-group row mb-3">
+                <label htmlFor="AlbumID" className="form-label">Album</label>
+                <div className="">
                   <select className='form-select' name="AlbumID" id="AlbumID" onChange={handleInputChange}>
                     <option value="">Pilih</option>
                     {albums.map((album) => (
@@ -163,6 +170,8 @@ const AddImageForm = () => {
             </div>
           </div>
         </form>
+      </div>
+      </>
   );
 };
 

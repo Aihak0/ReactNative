@@ -54,10 +54,10 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
                     album.*, 
                     user.Username,  
                     user.FileFoto AS UserFoto,
-                    (SELECT LokasiFile FROM foto WHERE AlbumID = album.AlbumID LIMIT 1) AS Foto1,
+                    (SELECT LokasiFileMin FROM foto WHERE AlbumID = album.AlbumID LIMIT 1) AS Foto1,
                     CASE 
                         WHEN (SELECT COUNT(*) FROM foto WHERE AlbumID = album.AlbumID) > 1 THEN
-                            (SELECT LokasiFile FROM foto WHERE AlbumID = album.AlbumID AND LokasiFile != (SELECT LokasiFile FROM foto WHERE AlbumID = album.AlbumID LIMIT 1) ORDER BY FotoID DESC LIMIT 1)
+                            (SELECT LokasiFileMin FROM foto WHERE AlbumID = album.AlbumID AND LokasiFileMin != (SELECT LokasiFileMin FROM foto WHERE AlbumID = album.AlbumID LIMIT 1) ORDER BY FotoID DESC LIMIT 1)
                         ELSE
                             NULL
                     END AS Foto2
@@ -65,9 +65,12 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
                     album
                 LEFT JOIN 
                     user ON album.UserID = user.UserID
+                WHERE 
+                    (SELECT LokasiFileMin FROM foto WHERE AlbumID = album.AlbumID LIMIT 1) IS NOT NULL OR 
+                    (SELECT LokasiFileMin FROM foto WHERE AlbumID = album.AlbumID AND LokasiFileMin != (SELECT LokasiFileMin FROM foto WHERE AlbumID = album.AlbumID LIMIT 1) ORDER BY FotoID DESC LIMIT 1) IS NOT NULL
                 ORDER BY 
                     album.TanggalDibuat DESC;
-;
+            
 
     ";
 
