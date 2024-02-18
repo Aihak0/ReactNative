@@ -67,13 +67,15 @@ const AddAlbum = () => {
     }
   };
     return (
-        <form>
-            <div className='col-a'>
-              <div className="form-a-group row-a">
-                <label htmlFor="JudulFoto" className="col-a-sm-2 col-a-form-label">Nama Album</label>
-                <div className="col-a-sm-10">
+        <div className='container mb-4'>
+            <h4 className='header'>Tambah Album</h4>
+            <p className='blockquote-footer py-2'>Tambahkan album gambar</p>
+            <div className='col'>
+              <div className="form-group row mb-3">
+                <label htmlFor="JudulFoto" className="form-label">Nama Album</label>
+                <div className="col">
                   <input
-                    className="form-a-control"
+                    className="form-control"
                     type="text"
                     name='NamaAlbum'
                     id='NamaAlbum'
@@ -81,17 +83,21 @@ const AddAlbum = () => {
                   />
                 </div>
               </div>
-              <div className="form-a-group row-a">
-                <label htmlFor="TanggalUnggah" className="col-a-sm-2 col-a-form-label">Deskripsi</label>
-                <div className="col-a-sm-10">
-                <textarea className="form-a-control" name='Deskripsi' id='Deskripsi' onChange={handleInputChange} rows="4" cols="50" alt="Album Description"></textarea>
+              <div className="form-group row mb-3">
+                <label htmlFor="TanggalUnggah" className="form-label">Deskripsi</label>
+                <div className="col">
+                <textarea className="form-control" name='Deskripsi' id='Deskripsi' onChange={handleInputChange} rows="4" cols="50" alt="Album Description"></textarea>
                 </div>
               </div>
-              <button type="button" className='btn-a m-a-1' onClick={() => window.location.href = '/'}>Close</button>
-            <button type="button" className='btn-a btn-a-success' onClick={handleFormSubmit}>Simpan</button>
+              <div className='float-end'>
+                  <a href="/"><button type='button' className='btn btn-light mx-3'>Close</button></a>
+                  <button type="button" className='btn btn-success' onClick={handleFormSubmit}
+                  disabled={!formData.NamaAlbum.trim() || !formData.Deskripsi.trim() } 
+                  >Simpan</button>
+              </div>
 
             </div>
-        </form>
+        </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
 import List from './components/List';
 import Header from './components/Header';
@@ -16,6 +16,22 @@ import AddAlbum from './components/AddAlbum';
 import Album from './components/Album';
 import FilterButtons from './components/FilterButton';
 import './App.css';
+import { FaArrowLeft } from "react-icons/fa6";
+
+function BackButton() {
+  const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    navigate(-1);
+  };
+
+  return (<>
+
+  <button className="btn btn-light rounded-circle d-flex p-3" onClick={handleNavigation} style={{position:"fixed", top:"90px", left:"20px"}}><FaArrowLeft /></button>
+  </>
+    
+  );
+}
 
 function App() {
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -50,6 +66,7 @@ function App() {
                     <>
                       <Header />
                       <div className="container p-0" style={{ marginTop: '100px' }}>
+                      <BackButton />
                         <AddImageForm />
                       </div>
                       <div className='container' style={{marginTop:"auto"}}>
@@ -64,6 +81,7 @@ function App() {
                     <>
                       <Header />
                       <div className="container p-0" style={{ marginTop: '140px' }}>
+                      <BackButton />
                         <AddAlbum />
                       </div>
                       <div className='container' style={{marginTop:"auto"}}>
@@ -79,6 +97,7 @@ function App() {
                   <PrivateRoute>
                       <Header />
                       <div className="container p-0" style={{ marginTop: '100px' }}>
+                      <BackButton />
                         <EditImage />
                       </div>
                       <div className='container' style={{marginTop:"auto"}}>
@@ -95,6 +114,7 @@ function App() {
                 <>
                   <Header />
                   <div className="container p-0" style={{ marginTop: '100px' }}>
+                  <BackButton />
                     <DetailImage />
                   </div>
                   <div className='container' style={{marginTop:"auto"}}>
@@ -109,6 +129,7 @@ function App() {
                 <>
                   <Header />
                   <div className="container p-0" style={{ marginTop: '100px' }}>
+                  <BackButton />
                     <Album />
                   </div>
                   <div className='container' style={{marginTop:"auto"}}>
@@ -123,7 +144,8 @@ function App() {
                 <>
                    <PrivateRoute>
                     <Header />
-                    <div className="container p-0" style={{ marginTop: '140px' }}>
+                    <div className="container p-0" style={{ marginTop: '100px' }}>
+                    
                       <Profile />
                     </div>
                     <div className='container' style={{marginTop:"auto"}}>
@@ -140,6 +162,7 @@ function App() {
                  <PrivateRoute>
                     <Header />
                     <div className="container p-0" style={{ marginTop: '100px' }}>
+                    
                       <Setting />
                     </div>
                     <div className='container' style={{marginTop:"auto"}}>

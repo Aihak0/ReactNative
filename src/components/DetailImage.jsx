@@ -13,7 +13,6 @@ const DetailImage = () => {
     const [isChecked, setIsChecked] = useState(false);
     const { isLoggedIn } = useAuth();
     const userID = sessionStorage.getItem('UserID') || 0;
-    const FileFoto = sessionStorage.getItem('FileFoto') || null;
     const [komentar, setKomentar] = useState([]);
     const navigate = useNavigate();
     const [komentarSend, setKomentarSend] = useState('');
@@ -28,12 +27,12 @@ const DetailImage = () => {
       Alamat: '',
     });
 
-
     const [imageData, setImageData] = useState({
       FotoID:'',
       JudulFoto: 'Unnamed',
       DeskripsiFoto: null,
       TanggalUnggah: '0-0-0',
+      created_at: '',
       height:0,
       width:0,
       AlbumID: 0,
@@ -339,7 +338,7 @@ const DetailImage = () => {
                           <h4 className="">{imageData.JudulFoto} </h4>
                       </div>
                       <div className="align-items-center">
-                          <p className="blockquote-footer m-0">{imageData.TanggalUnggah}</p>
+                          <p className="blockquote-footer m-0">{formatTime(imageData.created_at)}</p>
                       </div>
                   </div>
                   <div className="mb-3">
@@ -442,7 +441,7 @@ const DetailImage = () => {
                             style={{ justifyContent:"center", fontSize:"22px", padding:"12px" }}
                             onClick={handleKirimKomentar}
                             className="d-flex rounded-circle btn btn-a-purple border-0"
-                            disabled={!komentarSend.trim()} // Menonaktifkan tombol jika input kosong
+                            disabled={!komentarSend.trim()} 
                           >
                             <RxPaperPlane />
                           </button>

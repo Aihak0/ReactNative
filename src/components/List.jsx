@@ -173,7 +173,7 @@ const ImageGallery = ({selectedFilter }) => {
               <div className='d-flex justify-content-between align-items-center'>
                 {image.JudulFoto &&
                   <blockquote className="blockquote my-2 "  onClick={() => detailImage(image.FotoID)}>
-                    <p className="mb-0 h6 mt-2 ">{image.JudulFoto}</p>
+                    <p className="mb-0 h6 mt-2 text-truncate" style={{maxWidth:"160px"}}>{image.JudulFoto}</p>
                   </blockquote>
                 }
                 <div className='float-end'>
@@ -258,7 +258,7 @@ const ImageGallery = ({selectedFilter }) => {
         </>) : selectedFilter == 'fav' ? (
         <>
           <div className="image-gallery">
-          {images.all.map((image,index) => (
+          {images.fav.map((image,index) => (
             <div key={index} className='kolom-gambar'>
               <div className='image-container'  onClick={() => detailImage(image.FotoID)}>
                 <img src={image.LokasiFileMin} alt={image.JudulFoto}

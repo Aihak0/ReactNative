@@ -355,13 +355,12 @@
 
 .Menu {
   display: flex;
-  margin-bottom: 20px;
 }
 
 .Menu a {
   padding: 10px 0px;
-  margin: 0 20px;
   font-size: 16px;
+  margin: 0 10px;
   color: #262626;
   text-decoration: none;
   cursor: pointer;
@@ -392,8 +391,6 @@
 .album {
   display: none;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
   width: 100%;
 }
 
@@ -403,10 +400,10 @@
 }
 
 .foto {
-  background-color: #f2f2f2;
+  background-color: #ffffff;
 }
 
 .album {
-  background-color: #e6e6e6;
+  background-color: #ffffff;
 }
 

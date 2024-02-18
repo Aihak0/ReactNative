@@ -53,10 +53,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'image/png':
                 $image = imagecreatefrompng($newTargetFile);
                 break;
-            // Anda dapat menambahkan kasus lain sesuai dengan jenis gambar yang didukung
+            case 'image/gif':
+                $image = imagecreatefromgif($newTargetFile);
+                break;
+            case 'image/bmp':
+                $image = imagecreatefrombmp($newTargetFile); // Untuk gambar BMP
+                break;
+            case 'image/webp':
+                $image = imagecreatefromwebp($newTargetFile); // Untuk gambar WebP
+                break;
+            case 'image/tiff':
+            case 'image/x-tiff':
+                $image = imagecreatefromtiff($newTargetFile); // Untuk gambar TIFF
+                break;
+            case 'image/ico':
+            case 'image/x-icon':
+                $image = imagecreatefromico($newTargetFile); // Untuk gambar ICO
+                break;
             default:
-                die('Format gambar tidak didukung');
+                die('Format gambar tidak didukung: ' . $mime);
         }
+                
 
         $fileName = 'resized_image_' . $newFileName;
 

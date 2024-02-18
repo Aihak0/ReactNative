@@ -21,7 +21,7 @@ if(isset($_GET['user_id'])){
         album
     LEFT JOIN 
         user ON album.UserID = user.UserID
-    WHERE  album.UserID = '1' 
+    WHERE  album.UserID = '$userID' 
     ORDER BY 
         album.created_at DESC;";
     $result = $conn->query($query);

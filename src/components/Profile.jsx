@@ -1,42 +1,36 @@
 import React, { useState,useEffect } from 'react';
 import "./style.css";
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { FaPlus, FaRegHeart } from "react-icons/fa";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 import { CiMenuKebab } from "react-icons/ci";
 import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
 import { BiMessageSquareDetail } from "react-icons/bi";
 import { LuPlusCircle } from "react-icons/lu";
 import moment from 'moment-timezone';
 
-const customStyles = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      zIndex: 3,
-      width:"300px"
-    },
-  };
-
 const Profile = () => {
     const [activeTab, setActiveTab] = useState('foto');
     const userID = sessionStorage.getItem('UserID') || 0;
     const [dropdownState, setDropdownState] = useState({});
+    const [dropdownAlbumState, setAlbumDropdownState] = useState({});
     const [images, setImages] = useState([]);
     const [albums, setAlbums] = useState([]);
     const navigate = useNavigate();
+    const [albumData, setAlbum] = useState({
+      AlbumID:'',
+      NamaAlbum: '',
+      Deskripsi: '',
+    });
     const [formDataAlbum, setFormDataAlbum] = useState({
         AlbumID:0 ,
         FotoID: 0,
       });
+
       const [user, setUser] = useState({
         UserID:0,
         Username: 'Unnamed',
@@ -49,7 +43,7 @@ const Profile = () => {
 
       const [show, setShow] = useState(false);
       const handleClose = () => setShow(false);
-        const handleShow = (FotoID, AlbumID) => {
+        const handleShow = (FotoID, AlbumID) => { 
           setFormDataAlbum({
             ...formDataAlbum,
             FotoID: FotoID,
@@ -57,38 +51,100 @@ const Profile = () => {
           })
           setShow(true);
         }
-    function formatTime(time){
-      moment.tz.setDefault('Asia/Jakarta');
 
-      // Mendapatkan waktu saat ini dalam zona waktu WIB
-      const waktuKomentar = time; // Ganti dengan waktu komentar yang diterima dari server atau dari sumber lain
-      const waktuSekarang = moment();
-      const waktuKomentarFormatted = moment(waktuKomentar);
-      const selisih = waktuSekarang.diff(waktuKomentarFormatted, 'seconds');
-  
-      // Format waktu relatif
-      let waktuRelative;
-      if (selisih < 60) {
-        waktuRelative = "baru saja";
-      } else if (selisih < 3600) {
-        waktuRelative = Math.floor(selisih / 60) + " menit yang lalu";
-      } else if (selisih < 86400) {
-        waktuRelative = Math.floor(selisih / 3600) + " jam yang lalu";
-      } else if (selisih < 604800) {
-        waktuRelative = Math.floor(selisih / 86400) + " hari yang lalu";
-      } else if (selisih < 2592000) {
-        waktuRelative = Math.floor(selisih / 604800) + " minggu yang lalu";
-      } else if (selisih < 31536000) {
-        waktuRelative = Math.floor(selisih / 2592000) + " bulan yang lalu";
-      } else {
-        waktuRelative = Math.floor(selisih / 31536000) + " tahun yang lalu";
+        const [showModalAlbum, setShowModalAlbum] = useState(false);
+        const handleCloseModalAlbum = () => setShowModalAlbum(false);
+        const handleShowModalAlbum = (AlbumID, NamaAlbum, Deskripsi) => {
+           setAlbum({
+            ...albumData,
+            AlbumID: AlbumID,
+            NamaAlbum: NamaAlbum,
+            Deskripsi: Deskripsi
+          })
+          setShowModalAlbum(true);
+        }
+
+        const handleEditAlbum = async (e) => {
+          e.preventDefault();
+      
+          const formDataToSend = new FormData();
+          formDataToSend.append('AlbumID', albumData.AlbumID);
+          formDataToSend.append('NamaAlbum', albumData.NamaAlbum);
+          formDataToSend.append('Deskripsi', albumData.Deskripsi);
+      
+          console.log(albumData);
+        
+          try {
+            const response = await axios.post(`http://localhost/GALERY-VITE/api/editAlbum.php`, formDataToSend);
+            if (response.data.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Berhasil Mengupdate!',
+              }).then((result) => {
+                if (result.isConfirmed || result.isDismissed) {
+                  fetchAlbum();
+                  handleCloseModalAlbum();
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Gagal mengupdate.' + response.data,
+              });
+            }
+      
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Gagal mengupdate akana.',
+            });
+            console.error('Error updating data:', error);
+          }
+        };
+
+        const handleInputEditChange = (e) => {
+          const { name, value } = e.target;
+          setAlbum((prevData) => ({
+            ...prevData,
+            [name]: value,
+          }));
+        };
+
+      function formatTime(time){
+        moment.tz.setDefault('Asia/Jakarta');
+
+        // Mendapatkan waktu saat ini dalam zona waktu WIB
+        const waktuKomentar = time; // Ganti dengan waktu komentar yang diterima dari server atau dari sumber lain
+        const waktuSekarang = moment();
+        const waktuKomentarFormatted = moment(waktuKomentar);
+        const selisih = waktuSekarang.diff(waktuKomentarFormatted, 'seconds');
+    
+        // Format waktu relatif
+        let waktuRelative;
+        if (selisih < 60) {
+          waktuRelative = "baru saja";
+        } else if (selisih < 3600) {
+          waktuRelative = Math.floor(selisih / 60) + " menit yang lalu";
+        } else if (selisih < 86400) {
+          waktuRelative = Math.floor(selisih / 3600) + " jam yang lalu";
+        } else if (selisih < 604800) {
+          waktuRelative = Math.floor(selisih / 86400) + " hari yang lalu";
+        } else if (selisih < 2592000) {
+          waktuRelative = Math.floor(selisih / 604800) + " minggu yang lalu";
+        } else if (selisih < 31536000) {
+          waktuRelative = Math.floor(selisih / 2592000) + " bulan yang lalu";
+        } else {
+          waktuRelative = Math.floor(selisih / 31536000) + " tahun yang lalu";
+        }
+    
+        // Menyimpan waktu dalam state
+        return waktuRelative;
+    
+
       }
-  
-      // Menyimpan waktu dalam state
-      return waktuRelative;
-  
-
-    }
     
     const Toast = Swal.mixin({
       toast: true,
@@ -121,6 +177,28 @@ const Profile = () => {
         closeDropdown(fotoID);
       } else {
         openDropdown(fotoID);
+      }
+    };
+
+    const openDropdownAlbum = (AlbumID) => {
+      setAlbumDropdownState((prevState) => ({
+        ...prevState,
+        [AlbumID]: true,
+      }));
+    };
+  
+    const closeDropdownAlbum = (AlbumID) => {
+      setAlbumDropdownState((prevState) => ({
+        ...prevState,
+        [AlbumID]: false,
+      }));
+    };
+  
+    const toggleAlbumDropdown = (AlbumID) => {
+      if (dropdownAlbumState[AlbumID] == true) {
+        closeDropdownAlbum(AlbumID);
+      } else {
+        openDropdownAlbum(AlbumID);
       }
     };
 
@@ -161,9 +239,12 @@ const Profile = () => {
         handleClose();
       };
 
-      const handleDeleteConfirmation = (fotoID) => {
+      const handleDeleteConfirmation = (data, id, name) => {
+        const truncatedName = name.length > 20 ? name.slice(0, 20) + '...' : name;
+        const title = 'Hapus' + (data === 1 ? ' foto ' : ' album ') + truncatedName + '?';
+      
         Swal.fire({
-          title: 'Apakah Anda yakin menghapus?'+ fotoID,
+          title: title,
           text: "Anda tidak akan dapat mengembalikan ini!",
           icon: 'warning',
           showCancelButton: true,
@@ -173,14 +254,18 @@ const Profile = () => {
           cancelButtonText: 'Batal'
         }).then(async (result) => {
           if (result.isConfirmed) {
-            await handleDelete(fotoID);
+            await handleDelete(data, id);
           }
         });
       };
+      
 
-    const handleDelete = async (fotoID) => {
+    const handleDelete = async (data, id) => {
         try {
-        const response = await axios.post(`http://localhost/GALERY-VITE/api/deleteImage.php?id=${fotoID}`);
+          let response = null;
+          data == 1 ? 
+          response = await axios.post(`http://localhost/GALERY-VITE/api/deleteImage.php?id=${id}`)
+          : response = await axios.post(`http://localhost/GALERY-VITE/api/deleteAlbum.php?id=${id}`)
         if (response.data.success) {
             // Show a SweetAlert success message
             Swal.fire({
@@ -257,7 +342,7 @@ const Profile = () => {
   
     return (
         <>
-            <div className="ProfileContainer">
+            <div className="ProfileContainer mb-4">
                 <div className="Profile">
                     <img src={user.FileFoto ? user.FileFoto : "../../public/profile.jpg"} className='border' alt="Profile" />
                     <h1>{user.Username}</h1>
@@ -272,6 +357,27 @@ const Profile = () => {
                 Album
                 </a>
             </div>
+            <Modal show={showModalAlbum} onHide={handleCloseModalAlbum}>
+              <Modal.Header closeButton>
+                <Modal.Title>Edit Album</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+              <Form.Group controlId="formAlbum" className="mb-3">
+                <Form.Label>Nama Album</Form.Label>
+                <Form.Control type="text" name='NamaAlbum' value={albumData.NamaAlbum} onChange={handleInputEditChange}/>
+                <Form.Label>Deskripsi</Form.Label>
+                <textarea className="form-control" name="Deskripsi" id="deskripsi" value={albumData.Deskripsi} onChange={handleInputEditChange} cols="30" rows="5"></textarea>
+              </Form.Group>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="light" className='rounded-pill' onClick={handleCloseModalAlbum}>
+                  Tutup
+                </Button>
+                <Button variant="primary" className='rounded-pill' onClick={handleEditAlbum}>
+                  Simpan
+                </Button>
+              </Modal.Footer>
+            </Modal>
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>Pilih Album</Modal.Title>
@@ -298,10 +404,18 @@ const Profile = () => {
                 </Button>
               </Modal.Footer>
             </Modal>
-            <div className="ContainerContent my-4">
+            <div className="ContainerContent mb-4">
               <div  className={`justify-content-start pb-2 foto ${activeTab === 'foto' ? 'active' : ''}`}>
+                <div className='row-a' style={{display: "flex", justifyContent: "space-between", marginBottom:"30px"}}>
+                    <div className='col-a-sm-2'>
+                        <h3 style={{margin:0, right:0, display:"flex"}}>Foto</h3>
+                    </div>
+                    <div className='col-a-sm-2 text-a-right'>
+                    </div>
+                </div>
                 <h5 className='m-2'></h5>
-                  <div className="image-gallery">
+                { images.length > 0 ? (
+                  <div className="d-grid gap-3" style={{gridTemplateColumns: 'repeat(auto-fill, minmax(206px, 1fr))'}}>
                   {images.map((image,index) => (
                     <div key={index} className='kolom-gambar-1'>
                       <div className='image-container-1'  onClick={() => detailImage(image.FotoID)}>
@@ -326,7 +440,7 @@ const Profile = () => {
                                     <RiEdit2Line /> Edit
                                   </Link>
 
-                                  <Link onClick={() => handleDeleteConfirmation(image.FotoID)} className="list-group-item list-group-item-action">
+                                  <Link onClick={() => handleDeleteConfirmation(1, image.FotoID, image.JudulFoto)} className="list-group-item list-group-item-action">
                                     <RiDeleteBinLine /> Delete
                                   </Link>
                                   <Link onClick={() => handleShow(image.FotoID, image.AlbumID)} className="list-group-item list-group-item-action">
@@ -357,6 +471,8 @@ const Profile = () => {
                     </div>
                   ))}
                   </div>
+                ) : (<h6 className='text-center'>Tidak ada foto</h6>)}
+                  
                 </div>
                 <div className={`album ${activeTab === 'album' ? 'active' : ''}`}>
                     <div className='row-a' style={{display: "flex", justifyContent: "space-between", marginBottom:"30px"}}>
@@ -364,15 +480,16 @@ const Profile = () => {
                             <h3 style={{margin:0, right:0, display:"flex"}}>Album</h3>
                         </div>
                         <div className='col-a-sm-2 text-a-right'>
-                            <a href="/add-album">
+                            <a href="/add-album"className='text-dark'>
                                 <FaPlus />
                             </a>   
                         </div>
                     </div>
-                    <div className='d-grid gap-3' style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(262.50px, 1px))' }}>
+                    {albums.length > 0 ? (
+                      <div className='d-grid gap-3' style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}>
                       {albums.map((album,index) => (
-                        <div key={index} className='' style={{ cursor:"pointer"}} onClick={() => detailAlbum(album.AlbumID)}>
-                          <div className=' d-flex' style={{ height:"150px"}}>
+                        <div key={index} className='' style={{ cursor:"pointer"}} >
+                          <div className=' d-flex' style={{ height:"150px"}} onClick={() => detailAlbum(album.AlbumID)}>
                             <div className='col p-0 border me-1' style={{borderRadius:"10px 0 0 10px ", overflow: "hidden"}}>
                                 <img src={album.Foto1 ? album.Foto1 :"../../assets/select-image.jpeg"} className='w-100 h-100' alt="Foto" style={{objectFit: "cover",}}/>
                             </div>
@@ -381,18 +498,45 @@ const Profile = () => {
                             </div>
                           </div>
                           <div className='mx-2'>
-                            <blockquote className="blockquote my-2">
-                              <p className="mb-0 h6 mt-2">{album.NamaAlbum}</p>
-                            </blockquote>
+                            <div className='d-flex justify-content-between mt-1'>
+                              <blockquote className="blockquote my-2" onClick={() => detailAlbum(album.AlbumID)}>
+                                <p className="mb-0 h6">{album.NamaAlbum}</p>
+                              </blockquote>
+                              <div className='float-end'>
+                                {userID === album.UserID && (
+                                  <>
+                                    <a className='text-dark btn btn-outline-light btn-sm rounded-circle' style={{ position: 'relative', cursor:"pointer"}} onClick={() => toggleAlbumDropdown(album.AlbumID)}>
+                                      <CiMenuKebab />
+                                      {dropdownAlbumState[album.AlbumID] && (
+                                        <ul className="list-group text-start" style={{width:"100px", position: 'absolute', top: '100%', right: 0,zIndex:1}}>
+                                          <Link onClick={() => handleShowModalAlbum(album.AlbumID, album.NamaAlbum, album.Deskripsi)} className="list-group-item list-group-item-action">
+                                            <RiEdit2Line /> Edit
+                                          </Link>
+
+                                          <Link onClick={() => handleDeleteConfirmation(2, album.AlbumID, album.NamaAlbum)} className="list-group-item list-group-item-action">
+                                            <RiDeleteBinLine /> Delete
+                                          </Link>
+                                        </ul>
+                                      )}
+                                    </a>
+
+                                    </>
+                                  )}
+                                </div>
+                            </div>
+                            
                             <div className="d-flex justify-content-between" style={{ fontSize: "12px" }}>
                               <div className='col d-flex align-items-center'>
                               <span className=''>{formatTime(album.created_at)}</span>
                               </div>    
+                              
                             </div>
                           </div>
                         </div>
                       ))}
                     </div>
+                    ) : (<h6 className='text-center'>Tidak ada album</h6>) }
+                    
 
                 
                 </div>

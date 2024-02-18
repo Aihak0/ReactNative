@@ -66,7 +66,7 @@
 .image-gallery {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px; /* Menghilangkan spasi antara kolom */
+  gap: 16px; 
 }
 
 .kolom-gambar {
@@ -101,7 +101,6 @@
 }
 
 .image-container-1 {
-  width: 206px; /* Lebar gambar container */
   padding: 0;
   position: relative;
   height: 250px;

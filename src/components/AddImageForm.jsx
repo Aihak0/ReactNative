@@ -165,7 +165,9 @@ const AddImageForm = () => {
               </div>
               <div className='float-end'>
                   <a href="/"><button type='button' className='btn btn-light mx-3'>Close</button></a>
-                  <button type="button" className='btn btn-success' onClick={handleFormSubmit}>Simpan</button>
+                  <button type="button" className='btn btn-success' onClick={handleFormSubmit}
+                  disabled={!formData.fileFoto || !formData.JudulFoto.trim() || !formData.DeskripsiFoto.trim() } 
+                  >Simpan</button>
               </div>
             </div>
           </div>
