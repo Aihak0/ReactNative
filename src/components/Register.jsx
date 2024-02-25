@@ -29,18 +29,18 @@ function Register() {
   // Function to handle form submission
   const handleSubmit =  async (e) => {
     e.preventDefault();
-    // Add your registration logic here (e.g., send data to a server)
     try{
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
         formDataToSend.append(key, value);
       });
         const response = await axios.post(`http://localhost/GALERY-VITE/api/register.php`, formDataToSend);
+        console.log(response.data);
         if (response.data.success) {
             Swal.fire({
               icon: 'success',
               title: 'Berhasil',
-              text: 'Berhasil Registrasi Silahkan Login!',
+              text: 'Berhasil Register!',
             }).then((result) => {
               if (result.isConfirmed || result.isDismissed) {
                 window.location.href = '/login';
@@ -51,7 +51,7 @@ function Register() {
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: 'Gagal Register.'+response.data,
+              text: response.data.message,
             });
           }
     }catch(error){
@@ -63,106 +63,98 @@ function Register() {
           console.error('Error inserting data:', error);
 
     }
-    console.log('Form submitted:', formData);
-    // Reset form data after submission
-    setFormData({
-      username: '',
-      email: '',
+    setFormData(prevState => ({
+      ...prevState,
       password: '',
-      confirmPassword: '',
-      nama_lengkap: '',
-      alamat: '',
-    });
+      confirmPassword: ''
+    }));
   };
 
   // JSX for the Register component
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className='center-a'>
-        <div className='col-a-sm '>
-            <h2>Register</h2>
-            <div className="form-a-group">
-                <label className="col-a-sm-1 col-a-form-label">
-                Nama Lengkap:
-                </label>
-                <input
-                    type="text"
-                    className='form-a-control'
-                    name="nama_lengkap"
-                    value={formData.nama_lengkap}
-                    onChange={handleInputChange}
-                    required
-                />
-            </div>
-            <div className="form-a-group">
-                <label className="col-a-sm-1 col-a-form-label">
-                Alamat:
-                </label>
-                <input
-                    type="text"
-                    className='form-a-control'
-                    name="alamat"
-                    value={formData.alamat}
-                    onChange={handleInputChange}
-                    required
-                />
-            </div>
-            <div className="form-a-group">
-                <label className="col-a-sm-1 col-a-form-label">
-                Username:
-                </label>
-                <input
-                    type="text"
-                    className='form-a-control'
-                    name="username"
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    required
-                />
-            </div>
-            <div className="form-a-group">
-                <label className="col-a-sm-1 col-a-form-label">
-                Email:
-                </label>
-                <input
-                      type="email"
-                      name="email"
-                      className='form-a-control'
-                      value={formData.email}
+      <div className="container py-5 h-100">
+          <div className="row d-flex justify-content-center align-items-center h-100">
+            <div className="col-12 col-md-8 col-lg-6 col-xl-5">
+              <div className="card bg-light text-light" style={{borderRadius: "1rem" , background: "rgb(139,103,193)", background: "linear-gradient(0deg, rgba(139,103,193,1) 0%, rgba(255,157,157,1) 100%)" }}>
+                <div className="card-body p-5 text-center">
+
+                  <div className="mb-md-5 mt-md-4 pb-3">
+
+                    <h2 className="fw-bold mb-2 text-uppercase">Register</h2>
+                    <p className="text-dark-50 mb-3">Mohon lengkapi form berikut!</p>
+
+                    <div className="form-floating form-dark mb-4">
+                      <input type="text" id="NamaLengkap" className="form-control" 
+                        name="nama_lengkap"
+                       value={formData.nama_lengkap}
+                       onChange={handleInputChange}
+                       required
+                      />
+                      <label htmlFor="NamaLengkap">Nama Lengkap</label>
+                    </div>
+
+                    <div className="form-floating form-dark mb-4">
+                      <input type="text" id="Alamat" className="form-control" 
+                      name="alamat"
+                      value={formData.alamat}
                       onChange={handleInputChange}
                       required
-                />
+                      />
+                      <label htmlFor="Alamat">Alamat</label>
+                    </div>
+                    <div className="form-floating form-dark mb-4">
+                      <input type="text" id="Username" className="form-control" 
+                      name="username"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      required
+                      />
+                      <label htmlFor="Username">Username</label>
+                    </div>
+                    <div className="form-floating form-dark mb-4">
+                      <input type="email" id="Email" className="form-control" 
+                       name="email"
+                       value={formData.email}
+                       onChange={handleInputChange}
+                       required
+                      />
+                      <label htmlFor="Email">Email</label>
+                    </div>
+
+                    <div className="form-floating form-dark mb-4">
+                      <input type="password" id="Password" className="form-control form-control-lg" 
+                          name='password'
+                          value={formData.password}
+                          onChange={handleInputChange}
+                          required
+                      />
+                      <label className="form-label" htmlFor="Password">Password</label>
+                    </div>
+                    <div className="form-floating form-dark mb-4">
+                      <input type="password" id="confirmPass" className="form-control form-control-lg" 
+                          name='confirmPassword'
+                          value={formData.confirmPassword}
+                          onChange={handleInputChange}
+                          required
+                      />
+                      <label className="form-label" htmlFor="confirmPass">Confirm password</label>
+                    </div>
+
+                    <button className="btn btn-outline-light btn-lg px-5 w-100" type="submit">Register</button>
+
+                  </div>
+
+                  <div>
+                    <p className="mb-0">Sudah punya akun? <a href="/login" className="fw-bold link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Login</a>
+                    </p>
+                  </div>
+
+                </div>
+              </div>
             </div>
-            <div className="form-a-group">
-                <label className="col-a-sm-1 col-a-form-label">
-                Password:
-                </label>
-                <input
-                    type="password"
-                    name="password"
-                    className='form-a-control'
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                />
-            </div>
-            <div className="form-a-group">
-                <label className="col-a-sm-1 col-a-form-label">
-                Confirm Password:
-                </label>
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    className='form-a-control'
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    required
-                />
-            </div>
-            <a href="/login"><p>Sudah Punya Akun?</p></a>
-        <button className="btn-a btn-a-success" type="submit">Register</button>
-        </div>
+          </div>
         </div>
       </form>
     </div>

@@ -76,7 +76,7 @@ function Header() {
     <div className="App-header">
       <nav className='nav container'>
         <ul className="nav-list">
-          <li><Link to="/" className="navbar-brand"><img src="../../public/Logo2.png"  width="60" height="60"  alt="Logo" /></Link></li>
+          <li><Link to="/" className="navbar-brand"><img src="../../public/Logo3.png" className='rounded my-2' width="40" height="40"  alt="Logo" /></Link></li>
           <li className='nav-item mx-3'><Link to="/" className="btn btn-light rounded-pill">Beranda</Link></li>
         </ul>
         <ul className="nav-list-right">

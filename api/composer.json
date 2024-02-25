@@ -1,0 +1,9 @@
+{
+    "name": "adeazmi/api",
+    "description": "Api",
+    "type": "project",
+    "license": "Aihako",
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    }
+}

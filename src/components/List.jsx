@@ -20,6 +20,8 @@ const ImageGallery = ({selectedFilter }) => {
     ]
   });
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const userID = sessionStorage.getItem('UserID') || 0;
 
   const openDropdown = (fotoID) => {
@@ -105,14 +107,54 @@ const ImageGallery = ({selectedFilter }) => {
   };
 
   const fetchImages = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get('http://localhost/GALERY-VITE/api/getFoto.php');
       const selectedImageData = response.data ? response.data : [];
       console.log('Data yang diterima:', selectedImageData);
-
-      setImages(selectedImageData);
+  
+      setImages(prevImages => {
+        return {
+          ...prevImages,
+          all: mergeUnique(prevImages.all, selectedImageData.all),
+          fav: mergeUnique(prevImages.fav, selectedImageData.fav),
+          album: mergeUniqueAlbum(prevImages.album, selectedImageData.album)
+        };
+      });
+  
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching images:', error);
+      setIsLoading(false);
+    }
+  };
+  
+  // Fungsi untuk menggabungkan dua array dengan elemen unik
+  const mergeUnique = (arr1, arr2) => {
+    // Gabungkan dua array tanpa duplikat
+    const mergedArray = arr1.concat(arr2.filter(item => arr1.findIndex(el => el.FotoID === item.FotoID) === -1));
+    return mergedArray;
+  };
+  
+  // Fungsi untuk menggabungkan dua array album dengan elemen unik berdasarkan AlbumID
+  const mergeUniqueAlbum = (arr1, arr2) => {
+    // Gabungkan dua array album tanpa duplikat berdasarkan AlbumID
+    const mergedArray = arr1.concat(arr2.filter(item => arr1.findIndex(el => el.AlbumID === item.AlbumID) === -1));
+    return mergedArray;
+  };
+  
+  
+  
+
+    const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      // User has scrolled to the bottom
+      if (!isLoading) {
+        setPage(prevPage => prevPage + 1);
+      }
     }
   };
   
@@ -120,8 +162,18 @@ const ImageGallery = ({selectedFilter }) => {
     fetchImages();
   }, []);
   
-  
+    useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      // Detach scroll event listener
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
+   useEffect(() => {
+    // Fetch data when page changes
+    fetchImages();
+  }, [page]);
   return (
     
     <div className='pb-3'>
@@ -129,8 +181,8 @@ const ImageGallery = ({selectedFilter }) => {
         <>
           <div className='justify-content-start my-2 pb-2 border-bottom '>
           <h5 className='m-2'>Album</h5>
-          <div className='d-flex overflow-auto mb-3'>
-            {images.album.map((image,index) => (
+          <div className='d-flex mb-3 px-2' style={{overflow:"auto"}}>
+          {images.album.slice(0, 10).map((image, index) => (
               <div key={index} className='me-3' style={{width: "250px", cursor:"pointer"}} onClick={() => detailAlbum(image.AlbumID)}>
                 <div className=' d-flex' style={{ width: "250px",height:"150px"}}>
                   <div className='col p-0 border me-1' style={{borderRadius:"10px 0 0 10px ", overflow: "hidden"}}>
@@ -221,6 +273,7 @@ const ImageGallery = ({selectedFilter }) => {
             </div>
           ))}
           </div>
+          {isLoading && <p>Loading...</p>}
         </div>
         </>
         ) : selectedFilter == 'album' ? (

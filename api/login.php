@@ -30,16 +30,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Successful login
                 $_SESSION['UserID'] = $user['UserID'];
                 $_SESSION['Username'] = $user['Username'];
-                $response = ['success' => true, 'message' => 'Login successful!', 'id' => $user['UserID'], 'Username' => $user['Username'], 'FileFoto' => $user['FileFoto']];
+                $response = ['success' => true, 'message' => 'Berhasil Login!', 'id' => $user['UserID'], 'Username' => $user['Username'], 'FileFoto' => $user['FileFoto']];
                 echo json_encode($response);
             } else {
-                // Invalid credentials
-                $response = ['success' => false, 'error' => 'Invalid username or password'];
+                $response = ['success' => false, 'error' => 2, 'message' => 'Username atau password tidak valid'];
                 echo json_encode($response);
             }
         } else {
             // User not found
-            $response = ['success' => false, 'error' => 'User not found'];
+            $response = ['success' => false, 'error' => 1, 'message' => 'User Tidak ditemukan'];
             echo json_encode($response);
         }
 
@@ -50,12 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Send an error response to the client with a more informative message
         header('HTTP/1.1 500 Internal Server Error');
-        echo json_encode(['success' => false, 'error' => 'Failed to process login. Please try again.']);
+        echo json_encode(['success' => false, 'error' => 3, 'message' => 'Gagal login, monhon untuk mencoba kembali nanti.']);
     }
 } else {
     // If the request method is not POST, send a Bad Request response to the client
     header('HTTP/1.1 400 Bad Request');
-    echo json_encode(['success' => false, 'error' => 'Bad Request.']);
+    echo json_encode(['success' => false, 'error' => 4, 'message' => 'Jaringan buruk']);
     exit();
 }
 ?>

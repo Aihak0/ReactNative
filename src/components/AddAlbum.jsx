@@ -26,11 +26,21 @@ const AddAlbum = () => {
     e.preventDefault();
     console.log("sekske");
 
+    const formDataToSend = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataToSend.append(key, value);
+    });
+
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    
     try {
-      const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
-      });
 
       const response = await axios.post('http://localhost/GALERY-VITE/api/addAlbum.php', formDataToSend);
       console.log("sip");

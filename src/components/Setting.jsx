@@ -52,6 +52,15 @@ const Setting = () => {
     formDataToSend.append('action', 'UpdateFoto');
 
     console.log(user);
+
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
   
     try {
       const response = await axios.post(`http://localhost/GALERY-VITE/api/editUserProfile.php`, formDataToSend);
@@ -106,6 +115,15 @@ const Setting = () => {
     console.log(formDataToSend);
     console.log(user);
 
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     try {
       const response = await axios.post(`http://localhost/GALERY-VITE/api/editUserProfile.php`, formDataToSend);
       if (response.data.success) {
@@ -123,6 +141,59 @@ const Setting = () => {
           icon: 'error',
           title: 'Error',
           text: 'Gagal mengupdate.' + response.data,
+        });
+      }
+
+    } catch (error) {
+      // Show a SweetAlert error message
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Gagal mengupdate akana.',
+      });
+      console.error('Error updating data:', error);
+    }
+  };
+
+  const handleVeifyEmail = async (e) => {
+    e.preventDefault();
+    const formDataToSend = new FormData();
+
+    Object.entries(user).forEach(([key, value]) => {
+      if (key !== 'FileFoto') {
+        formDataToSend.append(key, value);
+      }
+    });
+
+    console.log(formDataToSend);
+    console.log(user);
+
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const response = await axios.post(`http://localhost/GALERY-VITE/api/verify_email.php`, formDataToSend);
+      if (response.data.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil',
+          text: 'Email ferifikasi sudah terkirim!',
+        }).then((result) => {
+          if (result.isConfirmed || result.isDismissed) {
+            fetchUserData();
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Gagal mengirim.' + response.data.message,
         });
       }
 
@@ -226,10 +297,13 @@ const Setting = () => {
               <input type="text" name='Username' className="form-control" id="inputUsername" placeholder="Username" value={user.Username}  onChange={handleInputChange}/>
             </div>
           </div>
-          <div className="form-group mb-3">
-            <label htmlFor="inputEmail">Email</label>
-            <input type="email" name='Email' className="form-control" id="inputEmail" placeholder="Email" value={user.Email}  onChange={handleInputChange}/>
-          </div>
+            <div className="form-group mb-3">
+              <label htmlFor="inputEmail">Email</label>
+              <div className='d-flex'>
+                <input type="email" name='Email' className="form-control me-3" id="inputEmail" placeholder="Email" value={user.Email}  onChange={handleInputChange}/>
+                <button className='btn btn-success btn-sm' onClick={handleVeifyEmail}>Kirim Verifikasi Email</button>
+              </div>
+          </div> 
           <div className="form-group mb-3">
             <label htmlFor="inputAddress">Alamat</label>
             <input type="text" name='Alamat' className="form-control" id="inputAddress" placeholder="Alamat" value={user.Alamat}  onChange={handleInputChange}/>

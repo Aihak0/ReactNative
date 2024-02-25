@@ -84,6 +84,15 @@ const EditImage = () => {
       formDataToSend.append(key, value);
     });
 
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
 
     try {
       const response = await axios.post(`http://localhost/GALERY-VITE/api/editImage.php`, formDataToSend);

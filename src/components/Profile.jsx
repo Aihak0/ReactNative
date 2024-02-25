@@ -389,6 +389,7 @@ const Profile = () => {
                       AlbumID: e.target.value
                     })
                   }>
+                    <option value="" >Pilih Album</option>
                     {albums.map((album) => (
                       <option key={album.AlbumID} value={album.AlbumID}>{album.NamaAlbum}</option>
                     ))}
@@ -449,7 +450,6 @@ const Profile = () => {
                                 </ul>
                               )}
                             </a>
-
                             </>
                           )}
                         </div>
