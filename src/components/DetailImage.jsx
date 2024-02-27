@@ -331,7 +331,7 @@ const DetailImage = () => {
               />
           </div>
           <div className='col' style={{  display: "flex",
-            flexFlow: "column",height:imageHeight}}>
+            flexFlow: "column", height:imageHeight}}>
               <div className="border-bottom px-3 mb-3">
                   <div className="d-flex mb-3">
                       <div className="col">

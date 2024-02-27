@@ -301,7 +301,8 @@ const Setting = () => {
               <label htmlFor="inputEmail">Email</label>
               <div className='d-flex'>
                 <input type="email" name='Email' className="form-control me-3" id="inputEmail" placeholder="Email" value={user.Email}  onChange={handleInputChange}/>
-                <button className='btn btn-success btn-sm' onClick={handleVeifyEmail}>Kirim Verifikasi Email</button>
+                {user.verify > 0 ? (<><span className='badge bg-primary' style={{fontSize:"20px"}}>Sudah terverifikasi</span></>) : (<><button className='btn btn-success btn-sm' onClick={handleVeifyEmail}>Kirim Verifikasi Email</button></>)}
+                
               </div>
           </div> 
           <div className="form-group mb-3">

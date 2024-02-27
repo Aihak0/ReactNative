@@ -4,12 +4,9 @@ include "koneksi.php";
 session_start();
 
 // Check if verification token exists and if it's not expired
-if(isset($_GET['token']) && isset($_SESSION['verification_token']) && isset($_SESSION['verification_time'])) {
+if(isset($_GET['token'])) {
     $token = $_GET['token'];
-    $stored_token = $_SESSION['verification_token'];
-    $token_time = $_SESSION['verification_time'];
-
-    if($token === $stored_token && (time() - $token_time) <= 120) {
+   
         if(isset($_GET['email'])) {
             $email = $_GET['email'];
             
@@ -27,8 +24,7 @@ if(isset($_GET['token']) && isset($_SESSION['verification_token']) && isset($_SE
                 $stmt->execute();
                 
                 echo "Email has been verified successfully.";
-                unset($_SESSION['verification_token']);
-                unset($_SESSION['verification_time']);
+             
             } else {
                 echo "Invalid email or email has already been verified.";
             }
@@ -36,9 +32,7 @@ if(isset($_GET['token']) && isset($_SESSION['verification_token']) && isset($_SE
             // Jika tidak ada parameter email yang diberikan di URL
             echo "Invalid request.";
         }
-    } else {
-        echo 'sudah melebihi 2 menit';
-    }
+
 } else {
     echo 'request tidak ditemukan';
 }

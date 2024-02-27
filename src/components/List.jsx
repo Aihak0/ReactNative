@@ -181,7 +181,7 @@ const ImageGallery = ({selectedFilter }) => {
         <>
           <div className='justify-content-start my-2 pb-2 border-bottom '>
           <h5 className='m-2'>Album</h5>
-          <div className='d-flex mb-3 px-2' style={{overflow:"auto"}}>
+          <div className='d-flex mb-3 py-3' style={{overflow:"auto"}}>
           {images.album.slice(0, 10).map((image, index) => (
               <div key={index} className='me-3' style={{width: "250px", cursor:"pointer"}} onClick={() => detailAlbum(image.AlbumID)}>
                 <div className=' d-flex' style={{ width: "250px",height:"150px"}}>
@@ -278,7 +278,7 @@ const ImageGallery = ({selectedFilter }) => {
         </>
         ) : selectedFilter == 'album' ? (
         <>
-        <div className='d-flex overflow-auto mb-3'>
+        <div className='d-grid gap-3' style={{gridTemplateColumns:" repeat(auto-fill, minmax(240px, 1fr))"}}>
             {images.album.map((image,index) => (
               <div key={index} className='me-3' style={{width: "250px", cursor:"pointer"}} onClick={() => detailAlbum(image.AlbumID)}>
                 <div className=' d-flex' style={{ width: "250px",height:"150px"}}>
