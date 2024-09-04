@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./public/Logo4.png" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vima</title>
   </head>
@@ -22,6 +23,29 @@
       display: flex;
       flex-direction: column;
       height: 100%;
+    }
+    .arrow {
+      cursor:pointer;
+      position: absolute;
+      border-radius: 3px;
+      color:purple;
+      background: #ffffff7d;
+      width:40px;
+      font-size: 30px;
+      text-align: center;
+      top: 25%;
+    }
+
+    .arrow:hover {
+      background: #869791;
+      color: #fff;
+    }
+    .next {
+      right: 10px;
+    }
+
+    .prev {
+      left: 10px;
     }
   </style>
   <body>

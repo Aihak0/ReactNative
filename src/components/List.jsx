@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BiMessageSquareDetail } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
@@ -8,6 +7,9 @@ import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
 import { CiMenuKebab } from "react-icons/ci";
 import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
+import OwlCarousel from 'react-owl-carousel';
+import 'owl.carousel/dist/assets/owl.carousel.css';
+import 'owl.carousel/dist/assets/owl.theme.default.css';
 
 const ImageGallery = ({selectedFilter }) => {
   const [dropdownState, setDropdownState] = useState({});
@@ -19,6 +21,15 @@ const ImageGallery = ({selectedFilter }) => {
     album:[
     ]
   });
+  const carouselRef = useRef(null);
+
+  const goToPrevSlide = () => {
+    carouselRef.current.prev();
+  };
+
+  const goToNextSlide = () => {
+    carouselRef.current.next();
+  };
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -181,35 +192,66 @@ const ImageGallery = ({selectedFilter }) => {
         <>
           <div className='justify-content-start my-2 pb-2 border-bottom '>
           <h5 className='m-2'>Album</h5>
-          <div className='d-flex mb-3 py-3' style={{overflow:"auto"}}>
-          {images.album.slice(0, 10).map((image, index) => (
-              <div key={index} className='me-3' style={{width: "250px", cursor:"pointer"}} onClick={() => detailAlbum(image.AlbumID)}>
-                <div className=' d-flex' style={{ width: "250px",height:"150px"}}>
-                  <div className='col p-0 border me-1' style={{borderRadius:"10px 0 0 10px ", overflow: "hidden"}}>
-                      <img src={image.Foto1 ? image.Foto1 :"../../assets/select-image.jpeg"} className='w-100 h-100' alt="Foto" style={{objectFit: "cover",}}/>
+         
+          <div className=''>
+            <div className="d-flex align-items-center">
+              <OwlCarousel
+                className='owl-theme'
+                items={4}
+                margin={10}
+                nav
+                navText={[
+                  '<span class="arrow prev">‹</span>',
+                  '<span class="arrow next">›</span>'
+                ]}
+                dots={false}
+                responsive={{
+                  0: {
+                    items: 1
+                  },
+                  576: {
+                    items: 2
+                  },
+                  768: {
+                    items: 3
+                  },
+                  992: {
+                    items: 4
+                  }
+                }}
+                ref={carouselRef}
+              >
+                {images.album.slice(0, 10).map((image, index) => (
+                  <div key={index} className='me-3' style={{ width: "300px", cursor: "pointer" }} onClick={() => detailAlbum(image.AlbumID)}>
+                    <div className=' d-flex' style={{ width: "320px", height: "190px" }}>
+                      <div className='col p-0 border me-1' style={{ borderRadius: "10px 0 0 10px", overflow: "hidden" }}>
+                        <img src={image.Foto1 ? image.Foto1 : "../../assets/select-image.jpeg"} className='w-100 h-100' alt="Foto" style={{ objectFit: "cover" }} />
+                      </div>
+                      <div className='col p-0 border ' style={{ borderRadius: "0 10px 10px 0", overflow: "hidden" }}>
+                        <img src={image.Foto2 ? image.Foto2 : "../../assets/select-image.jpeg"} className='w-100 h-100' alt="Foto" style={{ objectFit: "cover" }} />
+                      </div>
+                    </div>
+                    <div className='mx-2'>
+                      <blockquote className="blockquote my-2">
+                        <p className="mb-0 h6 mt-2">{image.NamaAlbum}</p>
+                      </blockquote>
+                      <div className="d-flex justify-content-between" style={{ fontSize: "12px" }}>
+                        <div className='col d-flex align-items-center'>
+                          <img
+                            src={image.UserFoto ? image.UserFoto : '../../public/profile.jpg'}
+                            className="border rounded-circle"
+                            style={{ width: "20px", height: "20px" }}
+                            alt="Profile"
+                          />
+                          <p className='m-0 mx-2 text-center'>{image.Username ? image.Username : 'unknown'}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className='col p-0 border ' style={{borderRadius:"0 10px 10px 0 ", overflow: "hidden"}}>
-                    <img src={image.Foto2 ? image.Foto2 :"../../assets/select-image.jpeg"} className='w-100 h-100' alt="Foto" style={{objectFit: "cover",}}/>
-                  </div>
-                </div>
-                <div className='mx-2'>
-                  <blockquote className="blockquote my-2">
-                    <p className="mb-0 h6 mt-2">{image.NamaAlbum}</p>
-                  </blockquote>
-                  <div className="d-flex justify-content-between" style={{ fontSize: "12px" }}>
-                    <div className='col d-flex align-items-center'>
-                      <img
-                        src={image.UserFoto ? image.UserFoto : '../../public/profile.jpg'}
-                        className="border rounded-circle"
-                        style={{ width: "20px", height: "20px" }}
-                        alt="Profile"
-                      />
-                      <p className='m-0 mx-2 text-center'>{image.Username ? image.Username : 'unknown'}</p>
-                    </div>    
-                  </div>
-                </div>
-              </div>
-            ))}
+                ))}
+              </OwlCarousel>
+   
+            </div>
           </div>
         </div>
         <div className='justify-content-start my-2 pb-2'>
