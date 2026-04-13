@@ -1,25 +1,22 @@
 VIMA adalah aplikasi berbasis web yang terinspirasi dari Pinterest, memungkinkan pengguna untuk menyimpan, melihat, dan berinteraksi dengan gambar melalui fitur like dan komentar.
 
-**Aplikasi ini dibangun menggunakan:**
-⚡ Vite + React (Frontend)
-🔗 PHP REST API (Backend)
-🗄️ MySQL (Database)
+**Aplikasi ini dibangun menggunakan:** :
+⚡ Vite + React (Frontend),
+🔗 PHP REST API (Backend),
+🗄️ MySQL (Database),
+🎞️ Bootstrap
 
-🚀 **Fitur Utama**
-🔐 Autentikasi pengguna (Login & Register)
-🖼️ Upload & simpan gambar
-📰 Feed gambar dari pengguna lain
-❤️ Like pada postingan
-💬 Komentar pada gambar
-👤 Profil pengguna
+🚀 **Fitur Utama** :
+🔐 Autentikasi pengguna (Login & Register),
+🖼️ Upload & simpan gambar,
+📰 Feed gambar dari pengguna lain,
+❤️ Like pada postingan,
+💬 Komentar pada gambar,
+👤 Profil pengguna,
 🔎 Eksplorasi gambar
 
 🏗️ **Arsitektur Sistem**
-Frontend (Vite + React)
-        ↓
-REST API (PHP)
-        ↓
-Database (MySQL)
+Frontend (Vite + React) -> REST API (PHP) -> Database (MySQL)
 
 Project overview
 
@@ -27,7 +24,7 @@ Project overview
 
 ⚙️ Installation
 1. Clone Repository (letakkan folder di folder htdocs XAMPP atau www laragon)
-git clone https://github.com/username/vima.git
+git clone https://github.com/Aihak0/VIMA.git
 cd vima
 Jalankan Apache & MySQL
 
@@ -35,12 +32,6 @@ Jalankan Apache & MySQL
 npm install
 npm run dev
 
-
-🎨 Teknologi yang Digunakan
-React (Vite)
-PHP Native (REST API)
-MySQL
-Bootstrap
 
 Kontribusi sangat terbuka!
 
